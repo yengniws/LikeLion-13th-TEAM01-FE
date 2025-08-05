@@ -1,7 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle `
   /* 1. reset.css 적용 */
   ${reset}
 
@@ -11,11 +11,12 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'Noto Sans KR', sans-serif;
-    background-color: #fff;
-    color: #333;
+    font-family: 'Noto Sans KR', sans-serif;  /* 폰트 변경 필요 */
+    background-color: #eee;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    padding: 0;
 
     /* 3. 화면 규격 사이즈 고정 (중앙 정렬) */
     width: 100%;
@@ -26,10 +27,9 @@ const GlobalStyle = createGlobalStyle`
 
   #root {
     /* 앱 화면 규격 (예: 모바일 앱 크기) */
-    width: 390px;
+    width: 100%;
+    max-width: 390px;
     min-height: 100vh;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 
     /* 스크롤 시 iOS에서 부드럽게 */
     -webkit-overflow-scrolling: touch;
