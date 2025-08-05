@@ -21,8 +21,6 @@ const GlobalStyle = createGlobalStyle `
     /* 3. 화면 규격 사이즈 고정 (중앙 정렬) */
     width: 100%;
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
   }
 
   #root {
@@ -30,6 +28,8 @@ const GlobalStyle = createGlobalStyle `
     width: 100%;
     max-width: 390px;
     min-height: 100vh;
+    border: 2px solid #ccc; /* 화면 크기 확인용 */
+    margin: 0 auto;
 
     /* 스크롤 시 iOS에서 부드럽게 */
     -webkit-overflow-scrolling: touch;
