@@ -1,5 +1,4 @@
-// Auth.jsx
-import { useRef, useState } from 'react'; // useState를 import 합니다.
+import { useRef, useState } from 'react';
 import * as S from './AuthStyle';
 import cardImg from '../../assets/img/auth_card.png';
 import chatMsg from '../../assets/img/auth_chat.png';
@@ -16,7 +15,7 @@ const Auth = () => {
       const file = event.target.files[0];
       if (file) {
          if (file.type !== 'image/jpeg') {
-            alert('JPG 파일만 업로드할 수 있습니다.');
+            alert('JPG 형식만 업로드할 수 있습니다.');
             event.target.value = '';
             return;
          }

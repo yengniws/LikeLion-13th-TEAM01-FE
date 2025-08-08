@@ -23,7 +23,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #root {
-    /* 앱 화면 규격 (예: 모바일 앱 크기) */
+    /* 모바일 앱 화면 규격 */
     width: 100%;
     max-width: 390px;
     min-height: 100svh;
