@@ -65,7 +65,6 @@ export const UploadedFileDisplay = styled.div`
    display: flex;
    justify-content: space-between;
    align-items: center;
-   justify-content: center;
    gap: 10px;
 `;
 
