@@ -101,7 +101,7 @@ const Organizer = () => {
 
             <input
                type="file"
-               accept="image/*"
+               accept="image/JPEG"
                ref={fileInputRef}
                onChange={handleFileChange}
                style={{ display: 'none' }}
