@@ -1,5 +1,17 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import OrganizerBackground from '../../assets/img/or_bg.png';
+
+const float = keyframes`
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+`;
 
 export const OrganizerContainer = styled.div`
    width: 100%;
@@ -20,6 +32,7 @@ export const OrganizerTxt = styled.div`
    font-weight: 500;
    color: black;
    letter-spacing: 0.5px;
+   animation: ${float} 4s ease-in-out infinite;
 `;
 
 export const InputBarContainer = styled.div`

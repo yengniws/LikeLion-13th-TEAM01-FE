@@ -1,6 +1,7 @@
 import * as S from './ChatlogStyle';
 import SubHeader from '../../components/SubHeader/SubHeader';
 import ThumbnailImage from '../../assets/img/chatlog_img.png'; // 임의 이미지
+import { useNavigate } from 'react-router-dom';
 
 const dummyChatlogs = [
    {
@@ -66,13 +67,17 @@ const dummyChatlogs = [
 ];
 
 const Chatlog = () => {
+   const navigate = useNavigate();
    return (
       <>
          <S.ChatlogContainer>
             <SubHeader title="기록" />
             <S.LogList>
                {dummyChatlogs.map((log) => (
-                  <S.LogItem key={log.id}>
+                  <S.LogItem
+                     key={log.id}
+                     onClick={() => navigate(`/airesult/${log.id}`)}
+                  >
                      <S.Thumbnail src={log.thumbnail} alt="기획안 이미지" />
                      <S.InfoWrapper>
                         <S.Title>{log.title}</S.Title>

@@ -4,6 +4,7 @@ import Layout from '../layout/Layout';
 import Auth from '../components/Auth/Auth';
 import Organizer from '../pages/Organizer/Organizer';
 import Chatlog from '../pages/Chatlog/Chatlog';
+import AiResult from '../pages/AiResult/AiResult';
 
 export const router = createBrowserRouter([
    {
@@ -14,6 +15,7 @@ export const router = createBrowserRouter([
          { path: '/auth', element: <Auth /> },
          { path: '/organizer', element: <Organizer /> },
          { path: '/chatlog', element: <Chatlog /> },
+         { path: '/airesult/:id', element: <AiResult /> },
       ],
    },
 ]);
