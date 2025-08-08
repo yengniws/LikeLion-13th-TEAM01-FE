@@ -1,7 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 
-const GlobalStyle = createGlobalStyle `
+const GlobalStyle = createGlobalStyle`
   /* 1. reset.css 적용 */
   ${reset}
 
@@ -19,17 +19,16 @@ const GlobalStyle = createGlobalStyle `
     padding: 0;
 
     /* 3. 화면 규격 사이즈 고정 (중앙 정렬) */
-    width: 100%;
-    min-height: 100vh;
+    height: 100%;
   }
 
   #root {
     /* 앱 화면 규격 (예: 모바일 앱 크기) */
     width: 100%;
     max-width: 390px;
-    min-height: 100vh;
-    border: 2px solid #ccc; /* 화면 크기 확인용 */
+    min-height: 100svh;
     margin: 0 auto;
+    background-color: #fff;
 
     /* 스크롤 시 iOS에서 부드럽게 */
     -webkit-overflow-scrolling: touch;
