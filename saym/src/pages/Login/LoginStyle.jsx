@@ -9,15 +9,15 @@ export const Container = styled.div`
    flex-direction: column; /* 아이템을 세로로 정렬 */
    justify-content: center; /* 세로 중앙 정렬 */
    align-items: center; /* 가로 중앙 정렬 */
-   height: 90vh; /* 화면 높이의 80%를 차지 */
+   height: 100vh;
    padding: 20px;
 `;
 
 // '로그인' 텍스트
 export const Title = styled.h1`
-   font-size: 24px;
+   font-size: 28px;
    font-weight: bold;
-   margin-bottom: 60px; /* 아래 요소와의 간격 */
+   margin-bottom: 80px; /* 아래 요소와의 간격 */
 `;
 
 // 프로필 이미지가 들어갈 원
