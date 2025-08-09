@@ -27,6 +27,13 @@ export const LogoCircle = styled.div`
    justify-content: center; /* 가로 가운데 */
 `;
 
+export const Logoimg = styled.img`
+   width: 90%;
+   height: 90%;
+   border-radius: 50%;
+   object-fit: contain;
+`;
+
 // 카카오 로그인 버튼
 export const KakaoButton = styled.button`
    background-color: #fee500; /* 카카오 공식 노란색 */

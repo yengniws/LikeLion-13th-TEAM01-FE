@@ -1,6 +1,12 @@
 import React from 'react';
-import { Container, Title, LogoCircle, KakaoButton } from './LoginStyle.jsx';
-import logoimg from './imges/logo.png';
+import {
+   Container,
+   Title,
+   LogoCircle,
+   KakaoButton,
+   Logoimg,
+} from './LoginStyle.jsx';
+import logoimg from './images/logo.png';
 
 const Login = () => {
    return (
@@ -9,16 +15,7 @@ const Login = () => {
             <Title>로그인</Title>
 
             <LogoCircle>
-               <img
-                  src={logoimg}
-                  alt="로고"
-                  style={{
-                     width: '90%',
-                     height: '90%',
-                     borderRadius: '50%',
-                     objectFit: 'contain', // 이미지가 원 안에 맞춰지도록 비율 유지
-                  }}
-               />
+               <Logoimg img src={logoimg} alt="로고" />
             </LogoCircle>
             <KakaoButton>
                💬
