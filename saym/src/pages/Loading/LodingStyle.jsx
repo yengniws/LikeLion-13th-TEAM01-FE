@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 // 화면 전체를 덮는 컨테이너 스타일
-export const LodingContainer = styled.div`
+export const LoadingContainer = styled.div`
    display: flex;
    justify-content: center;
    align-items: center;
