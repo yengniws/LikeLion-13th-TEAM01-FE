@@ -13,16 +13,9 @@ export const Container = styled.div`
    padding: 20px;
 `;
 
-// '로그인' 텍스트
-export const Title = styled.h1`
-   font-size: 28px;
-   font-weight: bold;
-   margin-bottom: 80px; /* 아래 요소와의 간격 */
-`;
-
 // 프로필 이미지가 들어갈 원
 export const LogoCircle = styled.div`
-   margin-bottom: 100px; /* 아래 버튼과의 간격 */
+   margin-bottom: 150px; /* 아래 버튼과의 간격 */
    display: flex;
    justify-content: center; /* 가로 가운데 */
 `;
