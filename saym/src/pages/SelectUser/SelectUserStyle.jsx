@@ -9,12 +9,14 @@ export const Container = styled.div`
    height: 100vh;
    padding: 20px;
 `;
+
 // "유저 정보를 선택해주세요" 텍스트
 export const Title = styled.h1`
    font-size: 1.5rem; // 24px
    font-weight: 600;
    margin-bottom: 60px;
 `;
+
 // 프로필 이미지가 들어갈 원
 export const LogoCircle = styled.div`
    margin-bottom: 80px; /* 아래 버튼과의 간격 */
