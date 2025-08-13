@@ -6,6 +6,7 @@ import Auth from '../components/Auth/Auth';
 import Organizer from '../pages/Organizer/Organizer';
 import Chatlog from '../pages/Chatlog/Chatlog';
 import AiResult from '../pages/AiResult/AiResult';
+import StoreInfo from '../pages/StoreInfo/StoreInfo';
 
 export const router = createBrowserRouter([
    {
@@ -13,11 +14,12 @@ export const router = createBrowserRouter([
       element: <Layout />,
       children: [
          { path: '/login', element: <Login /> },
-         { path: '/SelectUser', element: <SelectUser /> },
+         { path: '/selectuser', element: <SelectUser /> },
          { path: '/auth', element: <Auth /> },
          { path: '/organizer', element: <Organizer /> },
          { path: '/chatlog', element: <Chatlog /> },
          { path: '/airesult/:id', element: <AiResult /> },
+         { path: '/storeinfo', element: <StoreInfo /> },
       ],
    },
 ]);
