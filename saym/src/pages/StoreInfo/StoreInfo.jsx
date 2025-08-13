@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import SubHeader from '../../components/SubHeader/SubHeader';
-import ImageUploader from '../../components/ImageUploader/ImageUploader';
-import TimeSelector from '../../components/TimeSelector';
-import CouponInput from '../../components/CouponInput';
-import MenuInput from '../../components/MenuInput';
+import ImageUploader from '../../components/StoreInfoComponents/ImageUploader';
+import TimeSelector from '../../components/StoreInfoComponents/TimeSelector';
+import CouponInput from '../../components/StoreInfoComponents/CouponInput';
+import MenuInput from '../../components/StoreInfoComponents/MenuInput';
 import { useKakaoAddressFinder } from '../../hooks/KakaoAddressFinder';
 
 import * as S from './StoreInfoStyle';
