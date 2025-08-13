@@ -1,43 +1,49 @@
-import { useState } from 'react';
-import SubHeader from '../../components/SubHeader/SubHeader';
-import ImageUploader from '../../components/StoreInfoComponents/ImageUploader';
-import TimeSelector from '../../components/StoreInfoComponents/TimeSelector';
-import CouponInput from '../../components/StoreInfoComponents/CouponInput';
-import MenuInput from '../../components/StoreInfoComponents/MenuInput';
-import { useKakaoAddressFinder } from '../../hooks/KakaoAddressFinder';
-
+import { useState, useEffect } from 'react';
+import SubHeader from '../../SubHeader/SubHeader';
+import ImageUploader from '../ImageUploader';
+import TimeSelector from '../TimeSelector';
+import CouponInput from '../CouponInput';
+import MenuInput from '../MenuInput';
+import { useKakaoAddressFinder } from '../../../hooks/KakaoAddressFinder';
 import * as S from './StoreInfoStyle';
 
-export default function StoreInfo() {
-   const [storeData, setStoreData] = useState({
-      storeName: '',
-      storePhone: '',
-      businessStart: '00',
-      businessEnd: '00',
-      breakStart: '00',
-      breakEnd: '00',
-      holiday: '없음',
-      address: {
-         zipcode: '',
-         mainAddress: '',
-         extraAddress: '',
-         detailAddress: '',
+export default function StoreInfo({ isEdit, initialData }) {
+   const [storeData, setStoreData] = useState(
+      initialData || {
+         storeName: '',
+         storePhone: '',
+         businessStart: '00',
+         businessEnd: '00',
+         breakStart: '00',
+         breakEnd: '00',
+         holiday: '없음',
+         address: {
+            zipcode: '',
+            mainAddress: '',
+            extraAddress: '',
+            detailAddress: '',
+         },
+         coupons: [
+            { price: '', startTime: '00', endTime: '00', timeEnabled: true },
+         ],
+         menus: [{ name: '', price: '' }],
       },
-      coupons: [
-         { price: '', startTime: '00', endTime: '00', timeEnabled: true },
-      ],
-      menus: [{ name: '', price: '' }],
-   });
+   );
 
-   // 카카오 우편번호 API 훅
-   const openPostcode = useKakaoAddressFinder(setStoreData);
+   const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
 
-   // 기본 인풋 처리
+   // 수정 페이지 초기 데이터 세팅
+   useEffect(() => {
+      if (isEdit && initialData) setStoreData(initialData);
+   }, [isEdit, initialData]);
+
+   // 카카오 우편번호 api
+   useKakaoAddressFinder(setStoreData, isPostcodeOpen);
+
    const handleInputChange = (field, value) => {
       setStoreData((prev) => ({ ...prev, [field]: value }));
    };
 
-   // 상세주소 처리
    const handleAddressChange = (field, value) => {
       setStoreData((prev) => ({
          ...prev,
@@ -51,13 +57,11 @@ export default function StoreInfo() {
       updatedCoupons[index][field] = value;
       setStoreData((prev) => ({ ...prev, coupons: updatedCoupons }));
    };
-
    const toggleCouponTime = (index) => {
       const updatedCoupons = [...storeData.coupons];
       updatedCoupons[index].timeEnabled = !updatedCoupons[index].timeEnabled;
       setStoreData((prev) => ({ ...prev, coupons: updatedCoupons }));
    };
-
    const addCouponField = () => {
       setStoreData((prev) => ({
          ...prev,
@@ -74,7 +78,6 @@ export default function StoreInfo() {
       updatedMenus[index][field] = value;
       setStoreData((prev) => ({ ...prev, menus: updatedMenus }));
    };
-
    const addMenuField = () => {
       setStoreData((prev) => ({
          ...prev,
@@ -82,25 +85,32 @@ export default function StoreInfo() {
       }));
    };
 
+   const handleSubmit = () => {
+      if (isEdit) {
+         console.log('수정 API 호출');
+         // PUT 요청
+      } else {
+         console.log('등록 API 호출');
+         // POST 요청
+      }
+   };
+
    return (
       <>
-         <SubHeader title="가게 등록하기" />
+         <SubHeader title={isEdit ? '가게 수정하기' : '가게 등록하기'} />
          <S.Container>
             <S.Title>가게 정보를 입력해 주세요</S.Title>
 
-            {/* 가게 대표 이미지 */}
             <S.Label>가게 대표 이미지</S.Label>
             <ImageUploader />
 
-            {/* 가게 이름 */}
-            <S.Label>가게 이름 [상호명]</S.Label>
+            <S.Label>가게 이름</S.Label>
             <S.Input
                placeholder="가게 이름을 입력해주세요"
                value={storeData.storeName}
                onChange={(e) => handleInputChange('storeName', e.target.value)}
             />
 
-            {/* 가게 전화번호 */}
             <S.Label>가게 전화번호</S.Label>
             <S.Input
                placeholder="숫자만 입력해주세요"
@@ -111,7 +121,6 @@ export default function StoreInfo() {
                }}
             />
 
-            {/* 영업시간 */}
             <S.Label>영업 시간</S.Label>
             <TimeSelector
                label="영업"
@@ -137,7 +146,6 @@ export default function StoreInfo() {
                }
             />
 
-            {/* 정기 휴일 */}
             <S.SmlLabel>정기 휴일</S.SmlLabel>
             <S.Select
                value={storeData.holiday}
@@ -157,23 +165,19 @@ export default function StoreInfo() {
             <S.Label>가게 위치</S.Label>
             <S.AddressWrapper>
                <S.Input
-                  id="zipcode"
                   placeholder="우편번호"
                   readOnly
                   value={storeData.address.zipcode}
                />
-               <S.Button type="button" onClick={openPostcode}>
+               <S.Button type="button" onClick={() => setIsPostcodeOpen(true)}>
                   우편번호 찾기
                </S.Button>
             </S.AddressWrapper>
-
             <S.Input
-               id="address"
                placeholder="주소"
                readOnly
                value={storeData.address.mainAddress}
             />
-
             <S.Input
                placeholder="상세 주소"
                value={storeData.address.detailAddress}
@@ -182,7 +186,45 @@ export default function StoreInfo() {
                }
             />
 
-            {/* 쿠폰 설정 */}
+            {/* embed 모달 */}
+            {isPostcodeOpen && (
+               <div
+                  style={{
+                     position: 'fixed',
+                     top: 0,
+                     left: 0,
+                     width: '100%',
+                     height: '100%',
+                     backgroundColor: 'rgba(0,0,0,0.5)',
+                     zIndex: 9999,
+                  }}
+               >
+                  <div
+                     style={{
+                        width: '400px',
+                        height: '500px',
+                        margin: '100px auto',
+                        backgroundColor: '#fff',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                     }}
+                  >
+                     <div
+                        id="daum-postcode"
+                        style={{ width: '100%', height: '100%' }}
+                     />
+                  </div>
+                  <S.Button
+                     type="button"
+                     onClick={() => setIsPostcodeOpen(false)}
+                     style={{ position: 'absolute', top: 20, right: 20 }}
+                  >
+                     닫기
+                  </S.Button>
+               </div>
+            )}
+
+            {/* 쿠폰 */}
             <S.Label>쿠폰 설정</S.Label>
             {storeData.coupons.map((coupon, idx) => (
                <CouponInput
@@ -197,7 +239,7 @@ export default function StoreInfo() {
                + 쿠폰 추가
             </S.AddButton>
 
-            {/* 메뉴 입력 */}
+            {/* 메뉴 */}
             <S.Label>메뉴</S.Label>
             {storeData.menus.map((menu, idx) => (
                <MenuInput
@@ -211,12 +253,8 @@ export default function StoreInfo() {
                + 메뉴 추가
             </S.AddButton>
 
-            {/* 다음 버튼 */}
-            <S.SubmitButton
-               type="button"
-               onClick={() => console.log(storeData)}
-            >
-               다음
+            <S.SubmitButton type="button" onClick={handleSubmit}>
+               {isEdit ? '수정 완료' : '다음'}
             </S.SubmitButton>
          </S.Container>
       </>

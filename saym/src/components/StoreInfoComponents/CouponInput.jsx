@@ -1,4 +1,4 @@
-import * as S from '../../pages/StoreInfo/StoreInfoStyle';
+import * as S from './StoreInfo/StoreInfoStyle';
 import TimeSelector from './TimeSelector';
 import { Checkbox, FormControlLabel, Typography } from '@mui/material';
 

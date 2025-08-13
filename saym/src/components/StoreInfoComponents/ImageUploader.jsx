@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import * as S from '../../pages/StoreInfo/StoreInfoStyle';
+import * as S from '../StoreInfoComponents/StoreInfo/StoreInfoStyle';
 import uploadPlaceholder from '../../assets/img/imgUpload.png';
 
 export default function ImageUploader({ onFileSelect }) {
