@@ -86,3 +86,46 @@ export const ClearButton = styled.button`
    padding: 0;
    line-height: 1;
 `;
+
+export const ModalOverlay = styled.div`
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: rgba(0, 0, 0, 0.5);
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 1000;
+`;
+
+export const ModalContent = styled.div`
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+   background: white;
+   padding-left: 30px;
+   padding-right: 30px;
+   padding-top: 50px;
+   padding-bottom: 20px;
+   border-radius: 15px;
+   text-align: center;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+   div {
+      font-size: 18px;
+      color: #000;
+   }
+`;
+
+export const ModalButton = styled.button`
+   background-color: #4daeff;
+   color: white;
+   font-size: 16px;
+   font-weight: 600;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 10px;
+   cursor: pointer;
+   margin-top: 10px;
+`;
