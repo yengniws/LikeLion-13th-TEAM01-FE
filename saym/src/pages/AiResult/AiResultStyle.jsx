@@ -5,7 +5,7 @@ export const AiResultContainer = styled.div`
    flex-direction: column;
    padding: 20px 30px;
    padding-top: 100px;
-   height: 100vh;
+   height: 100dvh;
    overflow: hidden;
 `;
 
