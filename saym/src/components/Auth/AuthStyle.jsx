@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const AuthContainer = styled.div`
    position: relative;
    width: 100%;
-   height: 100vh;
+   height: 100dvh;
    background-color: white;
    overflow: hidden;
    padding: 30px;
@@ -18,7 +18,7 @@ export const AuthTxt = styled.div`
    color: #000;
    line-height: 1.4;
    letter-spacing: -0.1px;
-   padding-top: 10px;
+   padding-top: 30px;
 `;
 
 export const CardImage = styled.img`
