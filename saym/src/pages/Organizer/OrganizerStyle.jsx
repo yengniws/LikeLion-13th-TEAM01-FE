@@ -15,7 +15,7 @@ const float = keyframes`
 
 export const OrganizerContainer = styled.div`
    width: 100%;
-   height: 100vh;
+   height: 100dvh;
    background-image: url(${OrganizerBackground});
    background-size: contain;
    background-position: center;
@@ -66,6 +66,7 @@ export const IconButton = styled.button`
 
 export const TextInput = styled.input`
    flex-grow: 1;
+   min-width: 0;
    border: none;
    background: transparent;
    outline: none;
