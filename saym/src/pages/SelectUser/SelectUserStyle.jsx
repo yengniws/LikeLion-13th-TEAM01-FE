@@ -39,7 +39,7 @@ export const StyledButton = styled.button`
    margin-bottom: 20px;
    border: none;
    border-radius: 12px;
-   background-color: #6da7ff; // 이미지의 버튼 색상
+   background-color: #4daeff; // 이미지의 버튼 색상
    color: white;
    font-size: 1rem; // 16px
    font-weight: bold;
