@@ -1,4 +1,4 @@
-import * as S from '../../pages/StoreInfo/StoreInfoStyle';
+import * as S from '../StoreInfoComponents/StoreInfo/StoreInfoStyle';
 
 export default function MenuInput({ menu, index, onMenuChange }) {
    return (
