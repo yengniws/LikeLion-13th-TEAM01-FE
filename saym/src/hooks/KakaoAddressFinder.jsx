@@ -1,4 +1,4 @@
-export const useKakaoAddressFinder = (setAddress) => {
+export const useKakaoAddressFinder = (setStoreData) => {
    const openPostcode = () => {
       if (!window.daum) {
          alert('우편번호 api 로드 실패');
@@ -24,8 +24,7 @@ export const useKakaoAddressFinder = (setAddress) => {
                addr = data.jibunAddress;
             }
 
-            // 기존 상세주소 유지
-            setAddress((prev) => ({
+            setStoreData((prev) => ({
                ...prev,
                address: {
                   ...prev.address,

@@ -30,15 +30,13 @@ export default function StoreInfo({ isEdit, initialData }) {
       },
    );
 
-   const [isPostcodeOpen, setIsPostcodeOpen] = useState(false);
-
    // 수정 페이지 초기 데이터 세팅
    useEffect(() => {
       if (isEdit && initialData) setStoreData(initialData);
    }, [isEdit, initialData]);
 
    // 카카오 우편번호 api
-   useKakaoAddressFinder(setStoreData, isPostcodeOpen);
+   const openPostcode = useKakaoAddressFinder(setStoreData);
 
    const handleInputChange = (field, value) => {
       setStoreData((prev) => ({ ...prev, [field]: value }));
@@ -169,7 +167,7 @@ export default function StoreInfo({ isEdit, initialData }) {
                   readOnly
                   value={storeData.address.zipcode}
                />
-               <S.Button type="button" onClick={() => setIsPostcodeOpen(true)}>
+               <S.Button type="button" onClick={openPostcode}>
                   우편번호 찾기
                </S.Button>
             </S.AddressWrapper>
@@ -185,44 +183,6 @@ export default function StoreInfo({ isEdit, initialData }) {
                   handleAddressChange('detailAddress', e.target.value)
                }
             />
-
-            {/* embed 모달 */}
-            {isPostcodeOpen && (
-               <div
-                  style={{
-                     position: 'fixed',
-                     top: 0,
-                     left: 0,
-                     width: '100%',
-                     height: '100%',
-                     backgroundColor: 'rgba(0,0,0,0.5)',
-                     zIndex: 9999,
-                  }}
-               >
-                  <div
-                     style={{
-                        width: '400px',
-                        height: '500px',
-                        margin: '100px auto',
-                        backgroundColor: '#fff',
-                        borderRadius: '8px',
-                        overflow: 'hidden',
-                     }}
-                  >
-                     <div
-                        id="daum-postcode"
-                        style={{ width: '100%', height: '100%' }}
-                     />
-                  </div>
-                  <S.Button
-                     type="button"
-                     onClick={() => setIsPostcodeOpen(false)}
-                     style={{ position: 'absolute', top: 20, right: 20 }}
-                  >
-                     닫기
-                  </S.Button>
-               </div>
-            )}
 
             {/* 쿠폰 */}
             <S.Label>쿠폰 설정</S.Label>
