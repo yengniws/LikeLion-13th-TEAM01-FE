@@ -18,7 +18,7 @@ export const AuthTxt = styled.div`
    color: #000;
    line-height: 1.4;
    letter-spacing: -0.1px;
-   padding-top: 50px;
+   padding-top: 10px;
 `;
 
 export const CardImage = styled.img`
