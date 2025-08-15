@@ -8,18 +8,9 @@ import Chatlog from '../pages/Chatlog/Chatlog';
 import AiResult from '../pages/AiResult/AiResult';
 import RegisterStorePage from '../pages/StorePage/RegisterStorePage';
 import EditStorePage from '../pages/StorePage/EditStorePage';
-<<<<<<< HEAD
 import KakaoRedirectHandler from '../pages/Login/KakaoRedirectHandler';
-=======
-import RedirectHandler from '../pages/Login/Kakao/KakaoRedirectHandler';
->>>>>>> 5a216bd3d2d7c92048f0d2b6c1a42e4fb6558a86
 
 export const router = createBrowserRouter([
-   // 최상위 라우트 배열에 RedirectHandler 추가
-   {
-      path: '/api/v1/oauth2',
-      element: <RedirectHandler />,
-   },
    {
       path: '/',
       element: <Layout />,
