@@ -1,17 +1,17 @@
 import React from 'react';
 import { Container, LogoCircle, KakaoButton, Logoimg } from './LoginStyle.jsx';
 import logoimg from './images/logo.png';
+import KakaoLoginButton from './Kakao/KakaoLoginButton.jsx';
 
 const Login = () => {
    return (
       <>
          <Container>
             <LogoCircle>
-               <Logoimg img src={logoimg} alt="로고" />
+               <Logoimg src={logoimg} alt="로고" />
             </LogoCircle>
             <KakaoButton>
-               💬
-               <span>카카오 로그인</span>
+               <KakaoLoginButton />
             </KakaoButton>
          </Container>
       </>
