@@ -17,7 +17,7 @@ const SelectUser = () => {
       <Container>
          <Title>역할을 선택해주세요</Title>
          <LogoCircle>
-            <Logoimg img src={logoimg} alt="로고" />
+            <Logoimg src={logoimg} alt="로고" />
          </LogoCircle>
          <StyledButton onClick={() => handleSelection('행사 주최자')}>
             행사 주최자

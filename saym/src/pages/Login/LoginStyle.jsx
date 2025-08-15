@@ -27,24 +27,9 @@ export const Logoimg = styled.img`
    object-fit: contain;
 `;
 
-// 카카오 로그인 버튼
-export const KakaoButton = styled.button`
-   background-color: #fee500; /* 카카오 공식 노란색 */
-   color: #000000; /* 글자색 검정 */
-   border: none;
-   border-radius: 12px;
-   padding: 15px 0; /* 세로 패딩 15px, 가로 패딩 0 */
-   width: 90%; /* 화면 가로 너비의 90% */
-   max-width: 400px; /* 최대 너비 제한 */
-   font-size: 16px;
-   font-weight: bold;
-   cursor: pointer; /* 마우스를 올리면 손가락 모양으로 변경 */
-   display: flex;
-   justify-content: center;
-   align-items: center;
-
-   /* 아이콘과 텍스트 사이에 간격 추가 */
-   span {
-      margin-left: 8px;
-   }
+export const KakaoImg = styled.img`
+   width: 90%;
+   max-width: 400px;
+   cursor: pointer;
+   object-fit: contain;
 `;

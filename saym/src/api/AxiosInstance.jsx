@@ -1,37 +1,50 @@
 import axios from 'axios';
 
-// axios 인스턴스 생성 및 기본 설정
 const axiosInstance = axios.create({
-   baseURL: import.meta.env.VITE_BASE_URL, // Vite 환경 변수
+   baseURL: import.meta.env.VITE_BASE_URL,
 });
 
-// 요청 인터셉터
 axiosInstance.interceptors.request.use(
    (config) => {
-      // 로컬 스토리지에서 액세스 토큰 가져오기
       const token = localStorage.getItem('access_token');
       if (token) {
-         // 토큰이 존재하면 Authorization 헤더에 추가
          config.headers['Authorization'] = `Bearer ${token}`;
       }
-      return config; // 수정된 설정 반환
+      return config;
    },
-   (error) => {
-      // 요청 에러가 발생한 경우 에러를 반환
-      return Promise.reject(error);
-   },
+   (error) => Promise.reject(error),
 );
 
 axiosInstance.interceptors.response.use(
-   // 응답 성공 시 실행
    (response) => response,
-
-   // 토큰 만료 에러 시 실행
-   (error) => {
+   async (error) => {
       if (error.response?.status === 401) {
-         localStorage.removeItem('accessToken');
-         window.location.href = '/login';
-         return;
+         const refreshToken = localStorage.getItem('refresh_token');
+         if (refreshToken) {
+            try {
+               const res = await axiosInstance.post('/api/v1/oauth2/token', {
+                  refreshToken,
+               });
+               const newAccessToken = res.data?.accessToken;
+               if (!newAccessToken) throw new Error('새 토큰 없음');
+
+               localStorage.setItem('access_token', newAccessToken);
+
+               // 실패했던 요청 재시도
+               error.config.headers['Authorization'] =
+                  `Bearer ${newAccessToken}`;
+               return axiosInstance(error.config);
+            } catch (err) {
+               console.error('토큰 재발급 실패:', err);
+               localStorage.removeItem('access_token');
+               localStorage.removeItem('refresh_token');
+               window.location.href = '/login';
+            }
+         } else {
+            // refresh token도 없으면 강제 로그아웃
+            localStorage.removeItem('access_token');
+            window.location.href = '/login';
+         }
       }
       return Promise.reject(error);
    },

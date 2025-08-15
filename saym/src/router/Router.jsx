@@ -8,6 +8,7 @@ import Chatlog from '../pages/Chatlog/Chatlog';
 import AiResult from '../pages/AiResult/AiResult';
 import RegisterStorePage from '../pages/StorePage/RegisterStorePage';
 import EditStorePage from '../pages/StorePage/EditStorePage';
+import KakaoRedirectHandler from '../pages/Login/KakaoRedirectHandler';
 
 export const router = createBrowserRouter([
    {
@@ -15,6 +16,7 @@ export const router = createBrowserRouter([
       element: <Layout />,
       children: [
          { path: '/login', element: <Login /> },
+         { path: '/api/v1/oauth2', element: <KakaoRedirectHandler /> },
          { path: '/selectuser', element: <SelectUser /> },
          { path: '/auth', element: <Auth /> },
          { path: '/organizer', element: <Organizer /> },
