@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Login from '../pages/Login/Login';
 import SelectUser from '../pages/SelectUser/SelectUser';
 import Layout from '../layout/Layout';
+import UserScreen from '../pages/UserScreen/UserScreen';
 import Auth from '../components/Auth/Auth';
 import Organizer from '../pages/Organizer/Organizer';
 import Chatlog from '../pages/Chatlog/Chatlog';
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
          { path: '/login', element: <Login /> },
          { path: '/api/v1/oauth2', element: <KakaoRedirectHandler /> },
          { path: '/selectuser', element: <SelectUser /> },
+         { path: '/userscreen', element: <UserScreen /> },
          { path: '/auth', element: <Auth /> },
          { path: '/organizer', element: <Organizer /> },
          { path: '/chatlog', element: <Chatlog /> },
