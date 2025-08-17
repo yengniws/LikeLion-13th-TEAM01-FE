@@ -3,20 +3,20 @@ import styled from 'styled-components';
 export const MyPageContainer = styled.div`
    display: flex;
    flex-direction: column;
-   min-height: 100svh;
+   min-height: 100dvh;
    width: 100%;
    max-width: 390px;
    box-sizing: border-box;
    padding: 0px 31px;
    position: relative;
    background-color: white;
-   padding-top: 80px;
    overscroll-behavior: contain;
    overflow: hidden;
 `;
 
 export const ContentContainer = styled.div`
    padding: 20px;
+   padding-top: 100px;
    flex-grow: 1;
    position: relative;
    flex-shrink: 1;
