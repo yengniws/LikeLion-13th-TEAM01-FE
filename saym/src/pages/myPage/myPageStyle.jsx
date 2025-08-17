@@ -10,7 +10,7 @@ export const MyPageContainer = styled.div`
    padding: 0px 31px;
    position: relative;
    background-color: white;
-   padding-top: 100px;
+   padding-top: 80px;
    overscroll-behavior: contain;
    overflow: hidden;
 `;
@@ -22,7 +22,6 @@ export const ContentContainer = styled.div`
    flex-shrink: 1;
    min-height: 0;
    overflow-y: auto;
-   box-sizing: border-box;
 `;
 
 export const ProfileSection = styled.div`
@@ -94,7 +93,7 @@ export const SavedEventsSection = styled.div`
    background-color: #fffacd;
    border-radius: 10px;
    padding: 15px;
-   margin: 30px 0px;
+   margin: 20px 0px;
 `;
 
 export const SectionTitle = styled.h2`
@@ -143,6 +142,7 @@ export const ButtonSection = styled.div`
    display: flex;
    flex-direction: column;
    gap: 15px;
+   padding-bottom: 30px;
 `;
 
 export const ActionButton = styled.button`
@@ -162,7 +162,7 @@ export const ActionButton = styled.button`
 export const Footer = styled.div`
    display: flex;
    justify-content: space-between;
-   padding: 30px 30px;
+   padding: 0px 30px;
 `;
 
 export const FooterLink = styled.a`
