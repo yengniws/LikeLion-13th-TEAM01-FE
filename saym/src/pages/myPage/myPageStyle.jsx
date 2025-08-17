@@ -3,12 +3,13 @@ import styled from 'styled-components';
 export const MyPageContainer = styled.div`
    display: flex;
    flex-direction: column;
-   height: 100dvh;
+   min-height: 100dvh;
    width: 100%;
    max-width: 390px;
    box-sizing: border-box;
    padding: 31px;
    position: relative;
+   background-color: white;
    padding-top: 100px;
 `;
 
@@ -21,7 +22,7 @@ export const ContentContainer = styled.div`
 export const ProfileSection = styled.div`
    display: flex;
    align-items: center;
-   margin-bottom: 20px;
+   padding-bottom: 20px;
 `;
 
 export const ProfileImage = styled.div`
@@ -136,7 +137,7 @@ export const ButtonSection = styled.div`
    display: flex;
    flex-direction: column;
    gap: 15px;
-   margin-bottom: 30px;
+   padding-bottom: 40px;
 `;
 
 export const ActionButton = styled.button`
@@ -156,7 +157,6 @@ export const ActionButton = styled.button`
 export const Footer = styled.div`
    display: flex;
    justify-content: space-between;
-   margin-top: 70px;
    padding: 0px 30px;
 `;
 
