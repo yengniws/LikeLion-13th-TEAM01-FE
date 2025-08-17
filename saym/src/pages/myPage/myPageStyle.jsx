@@ -27,7 +27,7 @@ export const ContentContainer = styled.div`
 export const ProfileSection = styled.div`
    display: flex;
    align-items: center;
-   padding-bottom: 20px;
+   padding-bottom: 10px;
 `;
 
 export const ProfileImage = styled.div`
@@ -86,7 +86,7 @@ export const UseHistoryButton = styled.button`
 export const Divider = styled.hr`
    border: none;
    border-top: 1px solid #4daeff;
-   margin-bottom: 20px;
+   /* margin-bottom: 20px; */
 `;
 
 export const SavedEventsSection = styled.div`
