@@ -10,7 +10,7 @@ export const MyPageContainer = styled.div`
    padding: 31px;
    position: relative;
    background-color: white;
-   padding-top: 100px;
+   padding-top: 80px;
    overscroll-behavior: contain;
 `;
 
