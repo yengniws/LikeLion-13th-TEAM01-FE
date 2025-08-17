@@ -17,7 +17,7 @@ const MyPage = () => {
    const fetchUserInfo = async () => {
       try {
          const res = await axiosInstance.get('/api/v1/mypage');
-         console.log('마이페이지 정보:', res.data);
+         // console.log('마이페이지 정보:', res.data);
          const { data } = res.data;
          setUserName(data.name);
          setTempUserName(data.name);
