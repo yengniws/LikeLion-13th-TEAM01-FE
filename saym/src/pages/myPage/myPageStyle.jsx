@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const MyPageContainer = styled.div`
    display: flex;
    flex-direction: column;
-   min-height: 100svh;
+   min-height: 100dvh;
    width: 100%;
    max-width: 390px;
    box-sizing: border-box;
@@ -91,7 +91,7 @@ export const SavedEventsSection = styled.div`
    background-color: #fffacd;
    border-radius: 10px;
    padding: 15px;
-   margin: 40px 0px;
+   margin: 20px 0px;
 `;
 
 export const SectionTitle = styled.h2`
@@ -140,7 +140,7 @@ export const ButtonSection = styled.div`
    display: flex;
    flex-direction: column;
    gap: 15px;
-   padding-bottom: 40px;
+   padding-bottom: 30px;
 `;
 
 export const ActionButton = styled.button`
