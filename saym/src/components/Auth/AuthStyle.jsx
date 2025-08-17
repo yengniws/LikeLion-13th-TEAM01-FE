@@ -107,7 +107,7 @@ export const ModalContent = styled.div`
    background: white;
    padding-left: 30px;
    padding-right: 30px;
-   padding-top: 50px;
+   padding-top: 30px;
    padding-bottom: 20px;
    border-radius: 15px;
    text-align: center;
