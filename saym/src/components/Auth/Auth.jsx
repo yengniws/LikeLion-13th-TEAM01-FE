@@ -1,10 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import * as S from './AuthStyle';
 import cardImg from '../../assets/img/auth_card.png';
 import chatMsg from '../../assets/img/auth_chat.png';
-
-// 이미지 백에 보냄 -> 모달 띄움 -> 인증 전까지 이후 페이지 진입 불가 및 로그인 페이지로 자동 이동 -> 인증 완료된 사용자는 로그인시 바로 메인 페이지로 이동, 인증 미완료 이용자는 해당 모달 다시 띄우기 (모달 컴포넌트 분리해서 로그인 페이지 삽입하기 또는 auth 페이지 내에서 모달 창 바로 띄우기)
 
 const AUTH_KEY = 'authPending';
 
@@ -13,8 +11,13 @@ const Auth = () => {
    const [showModal, setShowModal] = useState(false);
    const fileInputRef = useRef(null);
    const navigate = useNavigate();
+   const location = useLocation();
+   const userType = location.state?.userType;
 
-   // 페이지 진입 -> 인증 진행 중이면 모달 띄움
+   useEffect(() => {
+      // console.log('선택된 userType:', userType);
+   }, [userType]);
+
    useEffect(() => {
       const authPending = localStorage.getItem(AUTH_KEY);
       if (authPending === 'true') {
@@ -24,9 +27,9 @@ const Auth = () => {
 
    const handleButtonClick = () => {
       if (selectedFile) {
-         // 인증 로직 넣기
+         // 백으로 userType + 파일 전송
 
-         localStorage.setItem(AUTH_KEY, 'true'); // 인증 진행 중 표시
+         localStorage.setItem(AUTH_KEY, 'true');
          setShowModal(true);
       } else {
          fileInputRef.current?.click();

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
    Container,
    Title,
@@ -9,8 +9,16 @@ import {
 import logoimg from './images/logo.png';
 
 const SelectUser = () => {
+   const navigate = useNavigate();
+
    const handleSelection = (userType) => {
-      console.log(`${userType} 선택됨`);
+      if (userType === '이용객') {
+         navigate('/userscreen');
+      } else if (userType === '행사 주최자') {
+         navigate('/auth', { state: { userType: 'ORGANIZER' } });
+      } else if (userType === '가맹점주') {
+         navigate('/auth', { state: { userType: 'OWNER' } });
+      }
    };
 
    return (
