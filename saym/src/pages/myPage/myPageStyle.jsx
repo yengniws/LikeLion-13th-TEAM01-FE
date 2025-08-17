@@ -11,12 +11,15 @@ export const MyPageContainer = styled.div`
    position: relative;
    background-color: white;
    padding-top: 100px;
+   overscroll-behavior: contain;
 `;
 
 export const ContentContainer = styled.div`
    padding: 20px;
    flex-grow: 1;
    position: relative;
+   flex-shrink: 1;
+   min-height: 0;
 `;
 
 export const ProfileSection = styled.div`
