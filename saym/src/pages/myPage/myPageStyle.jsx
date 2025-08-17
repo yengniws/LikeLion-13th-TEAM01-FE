@@ -30,7 +30,7 @@ export const ProfileSection = styled.div`
    padding-bottom: 10px;
 `;
 
-export const ProfileImage = styled.div`
+export const ProfileImage = styled.img`
    width: 70px;
    height: 70px;
    background-color: #d9d9d9;
