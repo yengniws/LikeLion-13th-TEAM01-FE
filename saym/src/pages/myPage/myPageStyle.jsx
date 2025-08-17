@@ -21,7 +21,7 @@ export const ContentContainer = styled.div`
    position: relative;
    flex-shrink: 1;
    min-height: 0;
-   overflow-y: auto;
+   overflow: hidden;
 `;
 
 export const ProfileSection = styled.div`
