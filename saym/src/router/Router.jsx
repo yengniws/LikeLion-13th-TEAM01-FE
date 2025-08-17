@@ -12,6 +12,7 @@ import EditStorePage from '../pages/StorePage/EditStorePage';
 import KakaoRedirectHandler from '../pages/Login/KakaoRedirectHandler';
 import MyPage from '../pages/myPage/myPage';
 import EventDetail from '../pages/EventDetail/EventDetail';
+import StoreDetail from '../pages/StoreDetail/StoreDetail';
 
 export const router = createBrowserRouter([
    {
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
          { path: '/selectuser', element: <SelectUser /> },
          { path: '/userscreen', element: <UserScreen /> },
          { path: '/event/:id', element: <EventDetail /> },
+         { path: '/store/:storeId', element: <StoreDetail /> },
          { path: '/auth', element: <Auth /> },
          { path: '/organizer', element: <Organizer /> },
          { path: '/chatlog', element: <Chatlog /> },
