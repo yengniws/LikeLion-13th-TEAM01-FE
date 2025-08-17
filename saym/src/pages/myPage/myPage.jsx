@@ -11,15 +11,18 @@ const MyPage = () => {
    const [tempUserName, setTempUserName] = useState('');
    const [userType, setUserType] = useState(null); // 기본 null (이용객)
    const [events, setEvents] = useState([]);
+   const [profileImage, setProfileImage] = useState('');
    const navigate = useNavigate();
 
    const fetchUserInfo = async () => {
       try {
          const res = await axiosInstance.get('/api/v1/mypage');
+         console.log('마이페이지 정보:', res.data);
          const { data } = res.data;
          setUserName(data.name);
          setTempUserName(data.name);
          setUserType(data.userType);
+         setProfileImage(data.pictureUrl);
       } catch (err) {
          console.error('마이페이지 정보 불러오기 실패:', err);
       }
@@ -115,7 +118,7 @@ const MyPage = () => {
          <Header_customer />
          <S.ContentContainer>
             <S.ProfileSection>
-               <S.ProfileImage />
+               <S.ProfileImage src={profileImage || null} />
                <S.NameSection>
                   {isEditingName ? (
                      <S.NameInput
