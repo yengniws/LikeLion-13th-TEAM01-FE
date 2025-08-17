@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import * as S from './EventDetailStyle';
 import { FaBookmark, FaRegBookmark } from 'react-icons/fa';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
@@ -114,9 +114,13 @@ const EventDetail = () => {
                {/* 3. 훅이 반환한 ref를 스크롤할 요소에 연결합니다. */}
                <S.PlaceList ref={scrollRef}>
                   {dummyRestaurants.map((restaurant) => (
-                     <S.PlaceCard key={restaurant.id}>
-                        {restaurant.name}
-                     </S.PlaceCard>
+                     <Link
+                        to={`/store/${restaurant.id}`}
+                        key={restaurant.id}
+                        style={{ textDecoration: 'none' }}
+                     >
+                        <S.PlaceCard>{restaurant.name}</S.PlaceCard>
+                     </Link>
                   ))}
                </S.PlaceList>
             </S.NearbySection>
