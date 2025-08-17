@@ -5,12 +5,16 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Header from '../../components/Header/Header';
+import axiosInstance from '../../api/axiosInstance';
+import { useNavigate } from 'react-router-dom';
 
 const Organizer = () => {
    const [inputValue, setInputValue] = useState('');
    const [isPromo, setIsPromo] = useState(false);
    const [selectedFile, setSelectedFile] = useState(null);
    const fileInputRef = useRef(null);
+   const [isLoading, setIsLoading] = useState(false);
+   const navigate = useNavigate();
 
    const handleIconClick = () => {
       fileInputRef.current?.click();
@@ -41,6 +45,47 @@ const Organizer = () => {
       }
    };
 
+   const handleKeyDown = async (event) => {
+      if (event.key === 'Enter') {
+         // 텍스트와 이미지가 모두 있는지 확인
+         if (inputValue.trim() === '' || !selectedFile) {
+            toast.error('텍스트와 이미지를 모두 입력해주세요.');
+            return;
+         }
+
+         if (isLoading) return;
+
+         setIsLoading(true);
+         const formData = new FormData();
+         formData.append('description', inputValue);
+         formData.append('imageFile', selectedFile);
+
+         const config = {
+            headers: {
+               'Content-Type': 'multipart/form-data',
+            },
+         };
+
+         try {
+            const response = await axiosInstance.post(
+               '/api/v1/ai/analyze',
+               formData,
+               config,
+            );
+            console.log('API 응답:', response.data);
+
+            // API 응답에서 AIID 값을 추출하여 페이지 이동
+            const { id } = response.data; // 수정 필요 (aiId)
+            navigate(`/airesult/${id}`);
+         } catch (error) {
+            console.error('API 호출 에러:', error);
+            toast.error('요청에 실패했습니다.');
+         } finally {
+            setIsLoading(false);
+         }
+      }
+   };
+
    return (
       <>
          <S.OrganizerContainer>
@@ -50,11 +95,9 @@ const Organizer = () => {
                autoClose={3000}
                hideProgressBar={false}
             />
-
             <S.OrganizerTxt>
                행사 아이디어, AI와 함께 다듬어 볼까요?
             </S.OrganizerTxt>
-
             {selectedFile && (
                <S.UploadedFileDisplay>
                   <S.FileName>{selectedFile.name}</S.FileName>
@@ -63,18 +106,17 @@ const Organizer = () => {
                   </S.ClearButton>
                </S.UploadedFileDisplay>
             )}
-
             <S.InputBarContainer>
                <S.IconButton onClick={handleIconClick}>
                   <IoImageOutline />
                </S.IconButton>
-
                <S.TextInput
                   placeholder="기획안을 입력하세요"
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  disabled={isLoading}
                />
-
                <FormControlLabel
                   control={
                      <Checkbox
@@ -98,7 +140,6 @@ const Organizer = () => {
                   }}
                />
             </S.InputBarContainer>
-
             <input
                type="file"
                accept="image/JPEG"
