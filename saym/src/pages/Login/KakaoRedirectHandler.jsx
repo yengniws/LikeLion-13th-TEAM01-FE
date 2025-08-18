@@ -9,19 +9,43 @@ const KakaoRedirectHandler = () => {
    useEffect(() => {
       if (code) {
          localStorage.setItem('kakao_code', code);
-         // console.log('인가 코드 저장:', code);
+         // console.log(code);
+
          axiosInstance
             .get('/api/v1/oauth2', { params: { code } })
             .then((res) => {
-               //    console.log(res.data);
-               const { accessToken, refreshToken } = res.data.data || {};
+               const { accessToken, refreshToken, userType, approvalStatus } =
+                  res.data.data || {};
+               // console.log('카카오 로그인 응답:', res.data);
+
                if (!accessToken || !refreshToken) throw new Error('토큰 없음');
 
                localStorage.setItem('access_token', accessToken);
                localStorage.setItem('refresh_token', refreshToken);
-               // console.log(localStorage);
+               if (userType) localStorage.setItem('userType', userType);
+               if (approvalStatus)
+                  localStorage.setItem('approvalStatus', approvalStatus);
 
-               navigate('/selectuser');
+               // ✅ 분기 로직
+               if (!userType || userType === 'GENERAL') {
+                  // userType이 null 또는 GENERAL
+                  navigate('/selectuser');
+               } else if (
+                  approvalStatus === 'PENDING' ||
+                  approvalStatus === 'REJECTED'
+               ) {
+                  navigate('/auth');
+               } else if (approvalStatus === 'APPROVED') {
+                  if (userType === 'ORGANIZER') {
+                     navigate('/organizer');
+                  } else if (userType === 'OWNER') {
+                     navigate('/userscreen');
+                  } else {
+                     navigate('/selectuser'); // fallback
+                  }
+               } else {
+                  navigate('/login'); // 알 수 없는 값
+               }
             })
             .catch((err) => {
                console.error('카카오 로그인 실패:', err);
@@ -33,7 +57,7 @@ const KakaoRedirectHandler = () => {
       }
    }, [code, navigate]);
 
-   return;
+   return null;
 };
 
 export default KakaoRedirectHandler;

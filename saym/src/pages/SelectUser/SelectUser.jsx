@@ -15,6 +15,9 @@ const SelectUser = () => {
    const [loading, setLoading] = useState(true);
 
    const handleSelection = (userType) => {
+      localStorage.setItem('selectedUserType', userType);
+      // console.log('선택된 유저 타입:', userType);
+
       if (userType === '이용객') {
          navigate('/userscreen');
       } else if (userType === '행사 주최자') {
