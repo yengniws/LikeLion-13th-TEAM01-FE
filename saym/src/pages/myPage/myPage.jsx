@@ -44,9 +44,14 @@ const MyPage = () => {
          if (data?.id) {
             setStoreId(data.id);
             localStorage.setItem('storeId', data.id);
+         } else {
+            setStoreId(null);
+            localStorage.removeItem('storeId');
          }
       } catch (err) {
          console.error('가게 정보 불러오기 실패:', err);
+         setStoreId(null);
+         localStorage.removeItem('storeId');
       }
    };
 
@@ -93,14 +98,11 @@ const MyPage = () => {
    const handleRoleChange = (role) => {
       // 이용객 버튼 -> 바로 이동
       if (role === 'GENERAL') {
-         // console.log('현재 role: GENERAL (이용객 모드)');
          navigate('/userscreen');
          return;
       }
 
       // OWNER, ORGANIZER 선택 시 approvalStatus 확인
-      // console.log('현재 approvalStatus:', approvalStatus);
-
       if (approvalStatus === 'PENDING') {
          navigate('/auth', { state: { nextUserType: role } });
       } else if (approvalStatus === 'APPROVED') {
@@ -154,6 +156,7 @@ const MyPage = () => {
    useEffect(() => {
       fetchUserInfo();
       fetchBookmarkedEvents();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    return (
@@ -208,7 +211,13 @@ const MyPage = () => {
                {userType === 'OWNER' && (
                   <>
                      <S.ActionButtonStore
-                        onClick={() => navigate('/store/register')}
+                        onClick={() => {
+                           if (storeId) {
+                              toast.error('하나의 가게만 등록 가능합니다');
+                              return;
+                           }
+                           navigate('/store/register');
+                        }}
                      >
                         가게 등록
                      </S.ActionButtonStore>

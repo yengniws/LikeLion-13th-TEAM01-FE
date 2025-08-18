@@ -1,5 +1,5 @@
-// src/components/StoreInfoComponents/StoreInfo/StoreInfo.jsx
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SubHeader from '../../SubHeader/SubHeader';
 import ImageUploader from '../ImageUploader';
 import TimeSelector from '../TimeSelector';
@@ -8,6 +8,7 @@ import MenuInput from '../MenuInput';
 import { useKakaoAddressFinder } from '../../../hooks/KakaoAddressFinder';
 import axiosInstance from '../../../api/AxiosInstance';
 import * as S from './StoreInfoStyle';
+import { toast } from 'react-toastify';
 
 export default function StoreInfo({ isEdit, initialData }) {
    const [storeData, setStoreData] = useState(
@@ -16,27 +17,24 @@ export default function StoreInfo({ isEdit, initialData }) {
          phoneNumber: '',
          openTime: '00',
          closeTime: '00',
-         breakStart: '00',
-         breakEnd: '00',
+         breakTimeStart: '00',
+         breakTimeEnd: '00',
          holiday: '없음',
          address: '',
          addressDetail: '',
-         coupons: [
-            { price: '', startTime: '00', endTime: '00', timeEnabled: true },
-         ],
+         couponName: '',
          menus: [{ menuName: '', price: '', isSignature: false }],
       },
    );
    const [pictureFile, setPictureFile] = useState(null);
+   const navigate = useNavigate();
 
-   // 수정 페이지 초기 데이터 세팅
    useEffect(() => {
       if (isEdit && initialData) {
          setStoreData(initialData);
       }
    }, [isEdit, initialData]);
 
-   // 카카오 우편번호 api
    const openPostcode = useKakaoAddressFinder((addrData) => {
       setStoreData((prev) => ({
          ...prev,
@@ -71,34 +69,63 @@ export default function StoreInfo({ isEdit, initialData }) {
       }));
    };
 
-   // 쿠폰 관련
-   const handleCouponChange = (index, field, value) => {
-      const updatedCoupons = [...storeData.coupons];
-      updatedCoupons[index][field] = value;
-      setStoreData((prev) => ({ ...prev, coupons: updatedCoupons }));
-   };
-   const toggleCouponTime = (index) => {
-      const updatedCoupons = [...storeData.coupons];
-      updatedCoupons[index].timeEnabled = !updatedCoupons[index].timeEnabled;
-      setStoreData((prev) => ({ ...prev, coupons: updatedCoupons }));
-   };
-   const addCouponField = () => {
-      setStoreData((prev) => ({
-         ...prev,
-         coupons: [
-            ...prev.coupons,
-            { price: '', startTime: '00', endTime: '00', timeEnabled: true },
-         ],
-      }));
-   };
-
    const handleSubmit = async () => {
+      // ⬅️ 유효성 검사 함수
+      const validateForm = () => {
+         const {
+            name,
+            phoneNumber,
+            address,
+            addressDetail,
+            couponName,
+            menus,
+         } = storeData;
+
+         // 필수 필드 검사
+         if (
+            !name.trim() ||
+            !phoneNumber.trim() ||
+            !address.trim() ||
+            !addressDetail.trim()
+         ) {
+            toast.error('모든 값을 입력해 주세요.');
+            return false;
+         }
+
+         // 메뉴 유효성 검사
+         const hasEmptyMenu = menus.some(
+            (menu) => !menu.menuName.trim() || !String(menu.price).trim(),
+         );
+         if (hasEmptyMenu) {
+            return false;
+         }
+
+         // 쿠폰 유효성 검사
+         if (!couponName.trim()) {
+            return false;
+         }
+
+         // 이미지 유효성 검사 (등록 시에만)
+         if (!isEdit && !pictureFile) {
+            return false;
+         }
+
+         return true;
+      };
+
+      if (!validateForm()) {
+         return;
+      }
+
       try {
          const formData = new FormData();
          formData.append('name', storeData.name);
          formData.append('phoneNumber', storeData.phoneNumber);
          formData.append('openTime', storeData.openTime + ':00');
          formData.append('closeTime', storeData.closeTime + ':00');
+         formData.append('breakTimeStart', storeData.breakTimeStart + ':00');
+         formData.append('breakTimeEnd', storeData.breakTimeEnd + ':00');
+         formData.append('regularDayOffNote', storeData.holiday);
          formData.append('address', storeData.address);
          formData.append('addressDetail', storeData.addressDetail);
          formData.append('parkingNote', '없음');
@@ -118,10 +145,7 @@ export default function StoreInfo({ isEdit, initialData }) {
             ),
          );
 
-         // 로그 확인용
-         for (let pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-         }
+         formData.append('couponName', storeData.couponName || '');
 
          if (isEdit && initialData?.id) {
             await axiosInstance.patch(
@@ -129,17 +153,23 @@ export default function StoreInfo({ isEdit, initialData }) {
                formData,
                { headers: { 'Content-Type': 'multipart/form-data' } },
             );
-            alert('가게 수정 완료');
+            toast.success('가게 수정 완료');
+            navigate('/mypage');
          } else {
             await axiosInstance.post('/api/v1/store', formData, {
                headers: { 'Content-Type': 'multipart/form-data' },
             });
-            alert('가게 등록 완료');
+            toast.success('가게 등록 완료');
+            navigate('/mypage');
          }
       } catch (err) {
          console.error(err);
-         alert('통신 중 오류 발생');
+         toast.error('통신 중 오류 발생');
       }
+   };
+
+   const handleCouponChange = (val) => {
+      setStoreData((prev) => ({ ...prev, couponName: val }));
    };
 
    return (
@@ -147,9 +177,11 @@ export default function StoreInfo({ isEdit, initialData }) {
          <SubHeader title={isEdit ? '가게 수정하기' : '가게 등록하기'} />
          <S.Container>
             <S.Title>가게 정보를 입력해 주세요</S.Title>
-
             <S.Label>가게 대표 이미지</S.Label>
-            <ImageUploader onFileSelect={setPictureFile} />
+            <ImageUploader
+               onFileSelect={setPictureFile}
+               initialImage={initialData?.pictureUrl}
+            />
 
             <S.Label>가게 이름</S.Label>
             <S.Input
@@ -162,9 +194,9 @@ export default function StoreInfo({ isEdit, initialData }) {
             <S.Input
                placeholder="전화번호를 입력해주세요"
                value={storeData.phoneNumber}
-               onChange={(e) => {
-                  handleInputChange('phoneNumber', e.target.value);
-               }}
+               onChange={(e) =>
+                  handleInputChange('phoneNumber', e.target.value)
+               }
             />
 
             <S.Label>영업 시간</S.Label>
@@ -182,13 +214,13 @@ export default function StoreInfo({ isEdit, initialData }) {
             <br />
             <TimeSelector
                label="브레이크타임"
-               startHour={storeData.breakStart}
-               endHour={storeData.breakEnd}
+               startHour={storeData.breakTimeStart}
+               endHour={storeData.breakTimeEnd}
                onStartChange={(e) =>
-                  handleInputChange('breakStart', e.target.value)
+                  handleInputChange('breakTimeStart', e.target.value)
                }
                onEndChange={(e) =>
-                  handleInputChange('breakEnd', e.target.value)
+                  handleInputChange('breakTimeEnd', e.target.value)
                }
             />
 
@@ -207,7 +239,6 @@ export default function StoreInfo({ isEdit, initialData }) {
                <option>일요일</option>
             </S.Select>
 
-            {/* 가게 위치 */}
             <S.Label>가게 위치</S.Label>
             <S.AddressWrapper>
                <S.Input
@@ -227,22 +258,13 @@ export default function StoreInfo({ isEdit, initialData }) {
                }
             />
 
-            {/* 쿠폰 */}
             <S.Label>쿠폰 설정</S.Label>
-            {storeData.coupons.map((coupon, idx) => (
-               <CouponInput
-                  key={idx}
-                  coupon={coupon}
-                  index={idx}
-                  onCouponChange={handleCouponChange}
-                  onToggleTime={toggleCouponTime}
-               />
-            ))}
-            <S.AddButton type="button" onClick={addCouponField}>
-               + 쿠폰 추가
-            </S.AddButton>
+            <S.Input
+               placeholder="쿠폰 이름"
+               value={storeData.couponName}
+               onChange={(e) => handleCouponChange(e.target.value)}
+            />
 
-            {/* 메뉴 */}
             <S.Label>메뉴</S.Label>
             {storeData.menus.map((menu, idx) => (
                <MenuInput

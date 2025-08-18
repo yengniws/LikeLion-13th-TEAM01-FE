@@ -13,7 +13,7 @@ const KakaoRedirectHandler = () => {
          axiosInstance
             .get('/api/v1/oauth2', { params: { code } })
             .then((res) => {
-               console.log(res.data);
+               // console.log(res.data);
                const { accessToken, refreshToken } = res.data.data || {};
                if (!accessToken || !refreshToken) throw new Error('토큰 없음');
 
