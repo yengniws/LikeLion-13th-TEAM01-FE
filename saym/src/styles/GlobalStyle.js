@@ -12,7 +12,7 @@ const GlobalStyle = createGlobalStyle`
 
   body {
     font-family: 'Noto Sans KR', sans-serif;  /* 폰트 변경 필요 */
-    /* background-color: #eee; */
+    background-color: white;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
