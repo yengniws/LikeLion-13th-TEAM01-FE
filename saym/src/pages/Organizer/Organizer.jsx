@@ -74,13 +74,10 @@ const Organizer = () => {
 
             console.log('API 응답:', response.data);
 
-            // ✅ 응답 구조에서 aiId 추출
             const { aiId } = response.data;
 
-            // ✅ aiId를 localStorage에 저장 (다른 페이지에서도 사용 가능)
             localStorage.setItem('lastAiId', aiId);
 
-            // ✅ 결과 페이지로 이동
             navigate(`/airesult/${aiId}`);
          } catch (error) {
             console.error('API 호출 에러:', error);
