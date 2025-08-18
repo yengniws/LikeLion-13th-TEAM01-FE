@@ -26,7 +26,6 @@ const KakaoRedirectHandler = () => {
                if (approvalStatus)
                   localStorage.setItem('approvalStatus', approvalStatus);
 
-               // ✅ 분기 로직
                if (!userType || userType === 'GENERAL') {
                   // userType이 null 또는 GENERAL
                   navigate('/selectuser');

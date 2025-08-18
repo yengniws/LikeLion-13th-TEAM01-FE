@@ -6,23 +6,41 @@ import chatMsg from '../../assets/img/auth_chat.png';
 import axiosInstance from '../../api/axiosInstance';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LoadingPage from '../../components/Loading/Loding';
 
 const Auth = () => {
    const [selectedFile, setSelectedFile] = useState(null);
    const [showModal, setShowModal] = useState(false);
+   const [loading, setLoading] = useState(false);
    const fileInputRef = useRef(null);
    const navigate = useNavigate();
    const location = useLocation();
-   const userType = location.state?.userType; // SelectUser 페이지에서 넘겨준 값
+   const userType = location.state?.userType;
 
-   // ✅ 페이지 진입 시 approvalStatus 체크
+   const withMinLoading = async (promise) => {
+      setLoading(true);
+      const start = Date.now();
+      try {
+         const result = await promise;
+         const elapsed = Date.now() - start;
+         const remaining = 2000 - elapsed;
+         if (remaining > 0) {
+            await new Promise((resolve) => setTimeout(resolve, remaining));
+         }
+         return result;
+      } finally {
+         setLoading(false);
+      }
+   };
+
    useEffect(() => {
       const checkApprovalStatus = async () => {
          try {
-            const res = await axiosInstance.get('/api/v1/mypage');
+            const res = await withMinLoading(
+               axiosInstance.get('/api/v1/mypage'),
+            );
             const { approvalStatus, userType: returnedType } = res.data.data;
 
-            // userType이 null 또는 GENERAL → Auth 페이지에 머무름
             if (!returnedType || returnedType === 'GENERAL') {
                return;
             }
@@ -64,12 +82,10 @@ const Auth = () => {
          formData.append('userType', userType);
          formData.append('businessLicenseFile', selectedFile);
 
-         const res = await axiosInstance.patch(
-            '/api/v1/member/user-type',
-            formData,
-            {
+         const res = await withMinLoading(
+            axiosInstance.patch('/api/v1/member/user-type', formData, {
                headers: { 'Content-Type': 'multipart/form-data' },
-            },
+            }),
          );
 
          const { approvalStatus, userType: returnedType } = res.data.data;
@@ -122,6 +138,10 @@ const Auth = () => {
       navigate('/login');
    };
 
+   if (loading) {
+      return <LoadingPage />;
+   }
+
    return (
       <S.AuthContainer>
          <S.AuthTxt>
@@ -166,7 +186,7 @@ const Auth = () => {
             </S.ModalOverlay>
          )}
 
-         <ToastContainer position="top-center" autoClose={1500} />
+         <ToastContainer position="top-right" autoClose={1500} />
       </S.AuthContainer>
    );
 };
