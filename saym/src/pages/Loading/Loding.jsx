@@ -1,7 +1,7 @@
 // src/pages/Loading/Loading.jsx
 
 import { LoadingContainer, LogoImage } from './LodingStyle';
-import logo from './images/logo.png';
+import logo from '../../assets/img/mainlogo.png';
 
 // 메인 로딩 화면 컴포넌트
 const LoadingScreen = () => {

@@ -1,5 +1,5 @@
 import { Container, LogoCircle, Logoimg, KakaoImg } from './LoginStyle.jsx';
-import logoimg from './images/logo.png';
+import logoimg from '../../assets/img/mainlogo.png';
 import kakaoLoginImg from '../../assets/img/kakao_login_large_wide.png';
 
 const Login = () => {

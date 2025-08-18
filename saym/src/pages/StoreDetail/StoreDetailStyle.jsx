@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 // 쿠폰 배경 이미지 import
-import couponBgImage from './images/couponBgImage.png'; // 실제 이미지 경로로 수정해주세요.
+import couponBgImage from '../../assets/img/couponBgImage.png'; // 실제 이미지 경로로 수정해주세요.
 
 export const PageContainer = styled.div`
    width: 100%;

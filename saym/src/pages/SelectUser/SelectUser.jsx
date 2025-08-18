@@ -6,7 +6,7 @@ import {
    Logoimg,
    StyledButton,
 } from './SelectUserStyle.jsx';
-import logoimg from './images/logo.png';
+import logoimg from '../../assets/img/mainlogo.png';
 
 const SelectUser = () => {
    const navigate = useNavigate();
