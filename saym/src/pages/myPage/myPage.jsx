@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FaPencilAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import Header_customer from '../../components/Header/Header_ customer/Header_ customer';
+import Header from '../../components/Header/Header';
 import * as S from './myPageStyle';
 import axiosInstance from '../../api/axiosInstance';
 
@@ -32,6 +33,7 @@ const MyPage = () => {
       try {
          const res = await axiosInstance.get('/api/v1/event/bookmark');
          setEvents(res.data.data);
+         // console.log('북마크 행사:', res.data.data);
       } catch (err) {
          console.error('북마크 행사 불러오기 실패:', err);
       }
@@ -89,13 +91,13 @@ const MyPage = () => {
       }
       if (userType === 'OWNER') {
          return [
-            { label: '이용객으로 변경', role: null },
+            { label: '이용객 페이지로 이동', role: null },
             { label: '행사 주최자로 변경', role: 'ORGANIZER' },
          ];
       }
       if (userType === 'ORGANIZER') {
          return [
-            { label: '이용객으로 변경', role: null },
+            { label: '이용객 페이지로 이동', role: null },
             { label: '가맹점주로 변경', role: 'OWNER' },
          ];
       }
@@ -115,7 +117,7 @@ const MyPage = () => {
 
    return (
       <S.MyPageContainer>
-         <Header_customer />
+         {userType === 'ORGANIZER' ? <Header /> : <Header_customer />}
          <S.ContentContainer>
             <S.ProfileSection>
                <S.ProfileImage src={profileImage || null} />
@@ -159,6 +161,21 @@ const MyPage = () => {
             </S.SavedEventsSection>
 
             <S.ButtonSection>
+               {/* 가맹점주일 경우에만 표시 */}
+               {userType === 'OWNER' && (
+                  <>
+                     <S.ActionButtonStore
+                        onClick={() => navigate('/store/register')}
+                     >
+                        가게 등록
+                     </S.ActionButtonStore>
+                     <S.ActionButtonStore
+                        onClick={() => navigate(`/store/edit/${123}`)} // 경로 수정
+                     >
+                        가게 수정
+                     </S.ActionButtonStore>
+                  </>
+               )}
                {getActionButtons().map((btn, idx) => (
                   <S.ActionButton
                      key={idx}
