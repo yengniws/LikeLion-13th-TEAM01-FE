@@ -1,3 +1,4 @@
+// src/components/StoreInfoComponents/StoreInfo/StoreInfo.jsx
 import { useState, useEffect } from 'react';
 import SubHeader from '../../SubHeader/SubHeader';
 import ImageUploader from '../ImageUploader';
@@ -5,47 +6,68 @@ import TimeSelector from '../TimeSelector';
 import CouponInput from '../CouponInput';
 import MenuInput from '../MenuInput';
 import { useKakaoAddressFinder } from '../../../hooks/KakaoAddressFinder';
+import axiosInstance from '../../../api/AxiosInstance';
 import * as S from './StoreInfoStyle';
 
 export default function StoreInfo({ isEdit, initialData }) {
    const [storeData, setStoreData] = useState(
       initialData || {
-         storeName: '',
-         storePhone: '',
-         businessStart: '00',
-         businessEnd: '00',
+         name: '',
+         phoneNumber: '',
+         openTime: '00',
+         closeTime: '00',
          breakStart: '00',
          breakEnd: '00',
          holiday: '없음',
-         address: {
-            zipcode: '',
-            mainAddress: '',
-            extraAddress: '',
-            detailAddress: '',
-         },
+         address: '',
+         addressDetail: '',
          coupons: [
             { price: '', startTime: '00', endTime: '00', timeEnabled: true },
          ],
-         menus: [{ name: '', price: '' }],
+         menus: [{ menuName: '', price: '', isSignature: false }],
       },
    );
+   const [pictureFile, setPictureFile] = useState(null);
 
    // 수정 페이지 초기 데이터 세팅
    useEffect(() => {
-      if (isEdit && initialData) setStoreData(initialData);
+      if (isEdit && initialData) {
+         setStoreData(initialData);
+      }
    }, [isEdit, initialData]);
 
    // 카카오 우편번호 api
-   const openPostcode = useKakaoAddressFinder(setStoreData);
+   const openPostcode = useKakaoAddressFinder((addrData) => {
+      setStoreData((prev) => ({
+         ...prev,
+         address: addrData.mainAddress,
+         addressDetail: addrData.detailAddress || '',
+      }));
+   });
 
    const handleInputChange = (field, value) => {
       setStoreData((prev) => ({ ...prev, [field]: value }));
    };
 
-   const handleAddressChange = (field, value) => {
+   const handleMenuChange = (index, field, value) => {
+      const updatedMenus = [...storeData.menus];
+      updatedMenus[index][field] = value;
+      setStoreData((prev) => ({ ...prev, menus: updatedMenus }));
+   };
+
+   const toggleMenuSignature = (index) => {
+      const updatedMenus = [...storeData.menus];
+      updatedMenus[index].isSignature = !updatedMenus[index].isSignature;
+      setStoreData((prev) => ({ ...prev, menus: updatedMenus }));
+   };
+
+   const addMenuField = () => {
       setStoreData((prev) => ({
          ...prev,
-         address: { ...prev.address, [field]: value },
+         menus: [
+            ...prev.menus,
+            { menuName: '', price: '', isSignature: false },
+         ],
       }));
    };
 
@@ -70,26 +92,53 @@ export default function StoreInfo({ isEdit, initialData }) {
       }));
    };
 
-   // 메뉴 관련
-   const handleMenuChange = (index, field, value) => {
-      const updatedMenus = [...storeData.menus];
-      updatedMenus[index][field] = value;
-      setStoreData((prev) => ({ ...prev, menus: updatedMenus }));
-   };
-   const addMenuField = () => {
-      setStoreData((prev) => ({
-         ...prev,
-         menus: [...prev.menus, { name: '', price: '' }],
-      }));
-   };
+   const handleSubmit = async () => {
+      try {
+         const formData = new FormData();
+         formData.append('name', storeData.name);
+         formData.append('phoneNumber', storeData.phoneNumber);
+         formData.append('openTime', storeData.openTime + ':00');
+         formData.append('closeTime', storeData.closeTime + ':00');
+         formData.append('address', storeData.address);
+         formData.append('addressDetail', storeData.addressDetail);
+         formData.append('parkingNote', '없음');
 
-   const handleSubmit = () => {
-      if (isEdit) {
-         console.log('수정 API 호출');
-         // PUT 요청
-      } else {
-         console.log('등록 API 호출');
-         // POST 요청
+         if (pictureFile) {
+            formData.append('pictureFile', pictureFile);
+         }
+
+         formData.append(
+            'menus',
+            JSON.stringify(
+               storeData.menus.map((m) => ({
+                  menuName: m.menuName,
+                  price: Number(m.price) || 0,
+                  isSignature: !!m.isSignature,
+               })),
+            ),
+         );
+
+         // 로그 확인용
+         for (let pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+         }
+
+         if (isEdit && initialData?.id) {
+            await axiosInstance.patch(
+               `/api/v1/store/${initialData.id}`,
+               formData,
+               { headers: { 'Content-Type': 'multipart/form-data' } },
+            );
+            alert('가게 수정 완료');
+         } else {
+            await axiosInstance.post('/api/v1/store', formData, {
+               headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            alert('가게 등록 완료');
+         }
+      } catch (err) {
+         console.error(err);
+         alert('통신 중 오류 발생');
       }
    };
 
@@ -100,35 +149,34 @@ export default function StoreInfo({ isEdit, initialData }) {
             <S.Title>가게 정보를 입력해 주세요</S.Title>
 
             <S.Label>가게 대표 이미지</S.Label>
-            <ImageUploader />
+            <ImageUploader onFileSelect={setPictureFile} />
 
             <S.Label>가게 이름</S.Label>
             <S.Input
                placeholder="가게 이름을 입력해주세요"
-               value={storeData.storeName}
-               onChange={(e) => handleInputChange('storeName', e.target.value)}
+               value={storeData.name}
+               onChange={(e) => handleInputChange('name', e.target.value)}
             />
 
             <S.Label>가게 전화번호</S.Label>
             <S.Input
-               placeholder="숫자만 입력해주세요"
-               value={storeData.storePhone}
+               placeholder="전화번호를 입력해주세요"
+               value={storeData.phoneNumber}
                onChange={(e) => {
-                  const onlyNumbers = e.target.value.replace(/[^0-9]/g, '');
-                  handleInputChange('storePhone', onlyNumbers);
+                  handleInputChange('phoneNumber', e.target.value);
                }}
             />
 
             <S.Label>영업 시간</S.Label>
             <TimeSelector
                label="영업"
-               startHour={storeData.businessStart}
-               endHour={storeData.businessEnd}
+               startHour={storeData.openTime}
+               endHour={storeData.closeTime}
                onStartChange={(e) =>
-                  handleInputChange('businessStart', e.target.value)
+                  handleInputChange('openTime', e.target.value)
                }
                onEndChange={(e) =>
-                  handleInputChange('businessEnd', e.target.value)
+                  handleInputChange('closeTime', e.target.value)
                }
             />
             <br />
@@ -163,24 +211,19 @@ export default function StoreInfo({ isEdit, initialData }) {
             <S.Label>가게 위치</S.Label>
             <S.AddressWrapper>
                <S.Input
-                  placeholder="우편번호"
+                  placeholder="주소"
                   readOnly
-                  value={storeData.address.zipcode}
+                  value={storeData.address ?? ''}
                />
                <S.Button type="button" onClick={openPostcode}>
-                  우편번호 찾기
+                  주소 찾기
                </S.Button>
             </S.AddressWrapper>
             <S.Input
-               placeholder="주소"
-               readOnly
-               value={storeData.address.mainAddress}
-            />
-            <S.Input
                placeholder="상세 주소"
-               value={storeData.address.detailAddress}
+               value={storeData.addressDetail || ''}
                onChange={(e) =>
-                  handleAddressChange('detailAddress', e.target.value)
+                  handleInputChange('addressDetail', e.target.value)
                }
             />
 
@@ -207,6 +250,7 @@ export default function StoreInfo({ isEdit, initialData }) {
                   menu={menu}
                   index={idx}
                   onMenuChange={handleMenuChange}
+                  onToggleSignature={toggleMenuSignature}
                />
             ))}
             <S.AddButton type="button" onClick={addMenuField}>
@@ -214,7 +258,7 @@ export default function StoreInfo({ isEdit, initialData }) {
             </S.AddButton>
 
             <S.SubmitButton type="button" onClick={handleSubmit}>
-               {isEdit ? '수정 완료' : '다음'}
+               {isEdit ? '수정 완료' : '등록 완료'}
             </S.SubmitButton>
          </S.Container>
       </>

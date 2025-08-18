@@ -1,3 +1,4 @@
+// src/components/StoreInfoComponents/ImageUploader.jsx
 import { useRef, useState } from 'react';
 import * as S from '../StoreInfoComponents/StoreInfo/StoreInfoStyle';
 import uploadPlaceholder from '../../assets/img/imgUpload.png';
@@ -10,7 +11,7 @@ export default function ImageUploader({ onFileSelect }) {
       const file = event.target.files[0];
       if (file) {
          setPreview(URL.createObjectURL(file));
-         onFileSelect(file);
+         if (onFileSelect) onFileSelect(file);
       }
    };
 

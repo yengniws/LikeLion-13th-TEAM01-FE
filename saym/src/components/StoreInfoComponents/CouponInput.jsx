@@ -1,3 +1,4 @@
+// src/components/StoreInfoComponents/CouponInput.jsx
 import * as S from './StoreInfo/StoreInfoStyle';
 import TimeSelector from './TimeSelector';
 import { Checkbox, FormControlLabel, Typography } from '@mui/material';

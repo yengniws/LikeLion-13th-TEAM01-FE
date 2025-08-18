@@ -102,11 +102,19 @@ export const AddButton = styled.div`
    padding-top: 10px;
 `;
 
+export const MenuInputWrapper = styled.div`
+   margin-bottom: 13px;
+`;
+
 export const MenuBox = styled.div`
    display: flex;
    gap: 8px;
 `;
 
+export const label = styled.label`
+   color: #525252;
+   font-size: 15px;
+`;
 export const SubmitButton = styled.button`
    width: 100%;
    padding: 13px;
