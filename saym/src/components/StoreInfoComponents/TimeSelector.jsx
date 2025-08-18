@@ -1,3 +1,4 @@
+// src/components/StoreInfoComponents/TimeSelector.jsx
 import * as S from './StoreInfo/StoreInfoStyle';
 
 export default function TimeSelector({
