@@ -3,12 +3,14 @@ import * as S from './ChatlogStyle';
 import SubHeader from '../../components/SubHeader/SubHeader';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../api/axiosInstance';
+import LoadingPage from '../../components/Loading/Loding';
 
 const Chatlog = () => {
    const navigate = useNavigate();
    const [chatlogs, setChatlogs] = useState([]);
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
+   const [imagesLoaded, setImagesLoaded] = useState(false);
 
    useEffect(() => {
       const fetchChatlogs = async () => {
@@ -23,18 +25,36 @@ const Chatlog = () => {
             }));
 
             setChatlogs(formattedData);
+
+            const imagePromises = formattedData.map(
+               (item) =>
+                  new Promise((resolve) => {
+                     const img = new Image();
+                     img.src = item.thumbnail;
+                     img.onload = resolve;
+                     img.onerror = resolve;
+                  }),
+            );
+
+            await Promise.all(imagePromises);
+            setImagesLoaded(true);
          } catch (err) {
             console.error('기록 불러오기 실패:', err);
             setError('기록을 불러오는 중 오류가 발생했습니다.');
-         } finally {
-            setLoading(false);
          }
       };
 
       fetchChatlogs();
    }, []);
 
-   if (loading) return <div>불러오는 중...</div>;
+   useEffect(() => {
+      if (imagesLoaded || error) {
+         const timer = setTimeout(() => setLoading(false), 2000);
+         return () => clearTimeout(timer);
+      }
+   }, [imagesLoaded, error]);
+
+   if (loading) return <LoadingPage />;
    if (error) return <div>{error}</div>;
 
    return (

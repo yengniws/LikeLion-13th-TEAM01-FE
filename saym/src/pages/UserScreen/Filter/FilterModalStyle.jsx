@@ -2,7 +2,6 @@
 
 import styled from 'styled-components';
 
-// ... ModalOverlay는 기존과 동일 ...
 export const ModalOverlay = styled.div`
    position: fixed;
    top: 0;
@@ -25,37 +24,37 @@ export const ModalContent = styled.div`
    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
    display: flex;
    flex-direction: column;
-   flex-wrap: wrap;
-   gap: 10px; // 그룹 간 간격을 조금 줄입니다.
+   gap: 20px;
 `;
 
-// 👇 '원하는 지역', '원하는 날짜' 텍스트 스타일
 export const Label = styled.p`
    font-size: 16px;
    font-weight: 500;
    color: #ffffff;
-   margin: 200; // 기본 마진 제거
-   width: 100px; // 텍스트 영역 너비 고정flex-wrap: wrap;
+   margin: 0;
 `;
 
-// 👇 하늘색 배경을 가진 필터 그룹 (핵심 변경)
 export const FilterGroup = styled.div`
-   border-radius: 10px;
-   padding: 15px;
-   width: 200 px;
    display: flex;
-   align-items: center; // 세로 중앙 정렬
+   flex-direction: column;
    gap: 15px;
 `;
 
-// 지역 버튼 (노란색으로 변경)
+export const RegionButtonRow = styled.div`
+   display: flex;
+   gap: 10px;
+   width: 100%;
+   justify-content: flex-start;
+`;
+
 export const RegionButton = styled.button`
-   flex: 1;
+   width: 70px;
+   flex-shrink: 0;
+   flex-grow: 0;
    padding: 8px;
-   border-radius: 20px; // 더 동그랗게
-   border: none; // 테두리 제거
-   background-color: ${(props) =>
-      props.selected ? '#4daeff' : '#fff1a7'}; // 선택 시 파랑, 기본은 노랑
+   border-radius: 20px;
+   border: none;
+   background-color: ${(props) => (props.selected ? '#4daeff' : '#fff1a7')};
    color: ${(props) => (props.selected ? 'white' : '#555')};
    font-size: 15px;
    font-weight: 500;
@@ -63,13 +62,12 @@ export const RegionButton = styled.button`
    transition: all 0.2s ease-in-out;
 `;
 
-// 날짜 입력 필드 (노란색으로 변경)
 export const DateInput = styled.input`
-   width: 50px; // 너비 고정
+   width: 70px;
    padding: 8px;
-   border-radius: 20px; // 더 동그랗게
-   border: none; // 테두리 제거
-   background-color: #fff1a7; // 노란색 배경
+   border-radius: 20px;
+   border: none;
+   background-color: #fff1a7;
    text-align: center;
    font-size: 15px;
 
@@ -82,15 +80,31 @@ export const DateInput = styled.input`
    }
 `;
 
-// 👇 날짜 단위를 보여줄 텍스트 스타일 추가
 export const DateUnit = styled.span`
    font-size: 15px;
    color: #555;
 `;
 
-// 👇 날짜 입력 필드와 단위를 묶는 컨테이너 추가
 export const DateInputContainer = styled.div`
    display: flex;
    align-items: center;
    gap: 8px;
+`;
+
+export const ConfirmButton = styled.button`
+   width: 100%;
+   padding: 12px;
+   border-radius: 25px;
+   border: none;
+   background-color: #4daeff;
+   color: white;
+   font-size: 18px;
+   font-weight: bold;
+   cursor: pointer;
+   margin-top: 10px;
+   transition: background-color 0.2s;
+
+   &:hover {
+      background-color: #2e90e4;
+   }
 `;

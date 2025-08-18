@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
+import PretendardRegular from '../assets/font/Pretendard-Light.otf';
 
 const GlobalStyle = createGlobalStyle`
   /* 1. reset.css 적용 */
@@ -10,9 +11,17 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 400;
+    font-style: normal;
+    src: url(${PretendardRegular}) format('truetype');
+  }
+
+
   body {
-    font-family: 'Noto Sans KR', sans-serif;  /* 폰트 변경 필요 */
-    background-color: #eee;
+    font-family: 'Pretendard', sans-serif;
+    background-color: white;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
