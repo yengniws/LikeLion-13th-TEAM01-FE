@@ -6,7 +6,7 @@ import EventoryLogo from '../../../assets/img/logo.png';
 const Header = () => {
    return (
       <S.HeaderContainer>
-         <Link to="/organizer">
+         <Link to="/userscreen">
             <S.Logo src={EventoryLogo} alt="Eventory Logo" />
          </Link>
 

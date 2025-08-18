@@ -8,6 +8,8 @@ const KakaoRedirectHandler = () => {
 
    useEffect(() => {
       if (code) {
+         localStorage.setItem('kakao_code', code);
+         // console.log('인가 코드 저장:', code);
          axiosInstance
             .get('/api/v1/oauth2', { params: { code } })
             .then((res) => {

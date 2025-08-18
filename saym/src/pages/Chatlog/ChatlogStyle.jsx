@@ -42,7 +42,10 @@ export const Title = styled.h3`
    font-weight: 600;
    color: #333;
    margin: 0;
-   width: 95%;
+   width: 80%;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
 `;
 
 export const Date = styled.p`

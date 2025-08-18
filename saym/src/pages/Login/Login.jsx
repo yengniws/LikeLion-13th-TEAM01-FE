@@ -1,8 +1,11 @@
+import { useState, useEffect } from 'react';
 import { Container, LogoCircle, Logoimg, KakaoImg } from './LoginStyle.jsx';
-import logoimg from './images/logo.png';
+import logoimg from '../../assets/img/mainlogo.png';
 import kakaoLoginImg from '../../assets/img/kakao_login_large_wide.png';
+import Loading from '../../components/Loading/Loding.jsx';
 
 const Login = () => {
+   const [loading, setLoading] = useState(true);
    const REST_API_KEY = import.meta.env.VITE_KAKAO_REST_API_KEY;
    const REDIRECT_URI = import.meta.env.VITE_KAKAO_REDIRECT_URI;
 
@@ -10,6 +13,15 @@ const Login = () => {
       const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code`;
       window.location.href = kakaoAuthUrl;
    };
+
+   // 이미지 로딩
+   useEffect(() => {
+      const img = new Image();
+      img.src = logoimg;
+      img.onload = () => setLoading(false);
+   }, []);
+
+   if (loading) return <Loading />;
 
    return (
       <Container>
