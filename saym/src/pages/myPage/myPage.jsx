@@ -7,6 +7,7 @@ import Header_customer from '../../components/Header/Header_ customer/Header_ cu
 import Header from '../../components/Header/Header';
 import * as S from './myPageStyle';
 import axiosInstance from '../../api/axiosInstance';
+import LoadingPage from '../../components/Loading/Loding';
 
 const MyPage = () => {
    const [isEditingName, setIsEditingName] = useState(false);
@@ -17,6 +18,7 @@ const MyPage = () => {
    const [events, setEvents] = useState([]);
    const [profileImage, setProfileImage] = useState('');
    const [storeId, setStoreId] = useState(null);
+   const [loading, setLoading] = useState(true);
    const navigate = useNavigate();
 
    const fetchUserInfo = async () => {
@@ -30,7 +32,7 @@ const MyPage = () => {
          setProfileImage(data.pictureUrl);
 
          if (data.userType === 'OWNER') {
-            fetchStoreInfo();
+            await fetchStoreInfo();
          }
       } catch (err) {
          console.error('마이페이지 정보 불러오기 실패:', err);
@@ -96,13 +98,11 @@ const MyPage = () => {
    };
 
    const handleRoleChange = (role) => {
-      // 이용객 버튼 -> 바로 이동
       if (role === 'GENERAL') {
          navigate('/userscreen');
          return;
       }
 
-      // OWNER, ORGANIZER 선택 시 approvalStatus 확인
       if (approvalStatus === 'PENDING') {
          navigate('/auth', { state: { nextUserType: role } });
       } else if (approvalStatus === 'APPROVED') {
@@ -148,16 +148,26 @@ const MyPage = () => {
       navigate('/login');
    };
 
-   // 북마크한 행사 목록 클릭 시 이동하는 함수
    const handleEventClick = (eventId) => {
       navigate(`/event/${eventId}`);
    };
 
    useEffect(() => {
-      fetchUserInfo();
-      fetchBookmarkedEvents();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      const loadData = async () => {
+         try {
+            await Promise.all([fetchUserInfo(), fetchBookmarkedEvents()]);
+         } catch (err) {
+            console.error(err);
+         } finally {
+            setTimeout(() => setLoading(false), 2000);
+         }
+      };
+      loadData();
    }, []);
+
+   if (loading) {
+      return <LoadingPage />;
+   }
 
    return (
       <S.MyPageContainer>

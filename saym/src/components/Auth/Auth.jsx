@@ -3,36 +3,114 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import * as S from './AuthStyle';
 import cardImg from '../../assets/img/auth_card.png';
 import chatMsg from '../../assets/img/auth_chat.png';
-
-const AUTH_KEY = 'authPending';
+import axiosInstance from '../../api/axiosInstance';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import LoadingPage from '../../components/Loading/Loding';
 
 const Auth = () => {
    const [selectedFile, setSelectedFile] = useState(null);
    const [showModal, setShowModal] = useState(false);
+   const [loading, setLoading] = useState(false);
    const fileInputRef = useRef(null);
    const navigate = useNavigate();
    const location = useLocation();
    const userType = location.state?.userType;
 
-   useEffect(() => {
-      // console.log('선택된 userType:', userType);
-   }, [userType]);
-
-   useEffect(() => {
-      const authPending = localStorage.getItem(AUTH_KEY);
-      if (authPending === 'true') {
-         setShowModal(true);
+   const withMinLoading = async (promise) => {
+      setLoading(true);
+      const start = Date.now();
+      try {
+         const result = await promise;
+         const elapsed = Date.now() - start;
+         const remaining = 2000 - elapsed;
+         if (remaining > 0) {
+            await new Promise((resolve) => setTimeout(resolve, remaining));
+         }
+         return result;
+      } finally {
+         setLoading(false);
       }
-   }, []);
+   };
 
-   const handleButtonClick = () => {
-      if (selectedFile) {
-         // 백으로 userType + 파일 전송
+   useEffect(() => {
+      const checkApprovalStatus = async () => {
+         try {
+            const res = await withMinLoading(
+               axiosInstance.get('/api/v1/mypage'),
+            );
+            const { approvalStatus, userType: returnedType } = res.data.data;
 
-         localStorage.setItem(AUTH_KEY, 'true');
-         setShowModal(true);
-      } else {
+            if (!returnedType || returnedType === 'GENERAL') {
+               return;
+            }
+
+            if (approvalStatus === 'REJECTED') {
+               toast.error('사업자 승인이 거절되었습니다.');
+               setTimeout(() => navigate('/login'), 1500);
+               return;
+            }
+
+            if (approvalStatus === 'APPROVED') {
+               if (returnedType === 'ORGANIZER') {
+                  navigate('/organizer');
+               } else if (returnedType === 'OWNER') {
+                  navigate('/store/register');
+               }
+               return;
+            }
+
+            if (approvalStatus === 'PENDING') {
+               setShowModal(true);
+            }
+         } catch (error) {
+            console.error('마이페이지 조회 실패:', error);
+         }
+      };
+
+      checkApprovalStatus();
+   }, [navigate]);
+
+   const handleButtonClick = async () => {
+      if (!selectedFile) {
          fileInputRef.current?.click();
+         return;
+      }
+
+      try {
+         const formData = new FormData();
+         formData.append('userType', userType);
+         formData.append('businessLicenseFile', selectedFile);
+
+         const res = await withMinLoading(
+            axiosInstance.patch('/api/v1/member/user-type', formData, {
+               headers: { 'Content-Type': 'multipart/form-data' },
+            }),
+         );
+
+         const { approvalStatus, userType: returnedType } = res.data.data;
+
+         if (approvalStatus === 'REJECTED') {
+            toast.error('사업자 승인이 거절되었습니다.');
+            setTimeout(() => navigate('/login'), 1500);
+            return;
+         }
+
+         if (approvalStatus === 'APPROVED') {
+            if (returnedType === 'ORGANIZER') {
+               navigate('/organizer');
+            } else if (returnedType === 'OWNER') {
+               navigate('/store/register');
+            }
+            return;
+         }
+
+         if (approvalStatus === 'PENDING') {
+            setShowModal(true);
+         }
+      } catch (error) {
+         console.error('인증 요청 실패:', error);
+         toast.error('인증 요청 중 오류가 발생했습니다.');
       }
    };
 
@@ -59,6 +137,10 @@ const Auth = () => {
       setShowModal(false);
       navigate('/login');
    };
+
+   if (loading) {
+      return <LoadingPage />;
+   }
 
    return (
       <S.AuthContainer>
@@ -92,11 +174,10 @@ const Auth = () => {
             {selectedFile ? '완료' : '이미지 업로드하기'}
          </S.UploadButton>
 
-         {/* 모달 */}
          {showModal && (
             <S.ModalOverlay>
                <S.ModalContent>
-                  <div>인증 중입니다! </div>
+                  <div>인증 중입니다!</div>
                   <div>인증에는 최대 이틀까지 소요돼요.</div>
                   <S.ModalButton onClick={handleModalConfirm}>
                      확인
@@ -104,6 +185,8 @@ const Auth = () => {
                </S.ModalContent>
             </S.ModalOverlay>
          )}
+
+         <ToastContainer position="top-right" autoClose={1500} />
       </S.AuthContainer>
    );
 };
