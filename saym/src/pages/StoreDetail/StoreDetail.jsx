@@ -4,7 +4,8 @@ import Header from '../../components/Header/Header_ customer/Header_ customer';
 import { FaMapMarkerAlt, FaCommentDots, FaDownload } from 'react-icons/fa';
 import { FaPen } from 'react-icons/fa';
 import { LuNotebookPen } from 'react-icons/lu';
-// 실제로는 API를 통해 받아올 데이터입니다.
+import couponBg from '../../assets/img/couponBgImage.png'; // 쿠폰 배경 이미지
+
 const storeData = {
    name: '가게 이름',
    operatingHours: '15:00 - 23:00',
@@ -32,27 +33,50 @@ const storeData = {
       address: '서울특별시 구로구 연동로 320',
       parking: '초록 상가 옆 무료 주차장',
    },
-   reviews: [
-      { id: 1, content: '짧은 글', imageUrl: 'placeholder_url' },
-      // 추가 리뷰 데이터
-   ],
+   reviews: [{ id: 1, content: '짧은 글', imageUrl: 'placeholder_url' }],
 };
 
 const StoreDetail = () => {
-   // 2. 가게 사장인지 여부를 판단하는 state (추후 서버 연동 필요)
    const [isOwner, setIsOwner] = useState(true);
-
-   // 3, 4. 쿠폰 모달 관련 state
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [selectedCoupon, setSelectedCoupon] = useState(null);
 
-   // 쿠폰 클릭 시 모달을 여는 함수
+   // 쿠폰 클릭 시 모달 열기 + 다운로드
    const handleCouponClick = (coupon) => {
       setSelectedCoupon(coupon);
       setIsModalOpen(true);
+
+      // 다운로드
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = 700;
+      canvas.height = 175;
+
+      const img = new Image();
+      img.src = couponBg;
+      img.onload = () => {
+         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+         ctx.fillStyle = 'black';
+         ctx.textAlign = 'center';
+         ctx.textBaseline = 'middle';
+
+         ctx.font = '24px Arial';
+         ctx.fillText(coupon.name, canvas.width / 2, canvas.height / 2 - 20);
+         ctx.font = '18px Arial';
+         ctx.fillText(
+            coupon.description,
+            canvas.width / 2,
+            canvas.height / 2 + 20,
+         );
+
+         const link = document.createElement('a');
+         link.download = `${coupon.name}.png`;
+         link.href = canvas.toDataURL('image/png');
+         link.click();
+      };
    };
 
-   // 모달을 닫는 함수
    const closeModal = () => {
       setIsModalOpen(false);
       setSelectedCoupon(null);
@@ -60,7 +84,6 @@ const StoreDetail = () => {
 
    return (
       <S.PageContainer>
-         {/* 1. 헤더 컴포넌트 */}
          <Header />
 
          <S.ContentWrapper>
@@ -73,10 +96,8 @@ const StoreDetail = () => {
                      영업시간 : {storeData.operatingHours}
                   </S.OperatingHours>
                </S.InfoTextWrapper>
-               {/* 2. 사장일 경우에만 정보 수정 버튼 노출 */}
                {isOwner && (
                   <S.EditButton>
-                     {' '}
                      <FaPen /> &nbsp;가게 정보 수정
                   </S.EditButton>
                )}
@@ -140,7 +161,7 @@ const StoreDetail = () => {
             </S.Section>
          </S.ContentWrapper>
 
-         {/* 4. 쿠폰 안내 모달 */}
+         {/* 쿠폰 모달 */}
          {isModalOpen && (
             <S.ModalBackdrop onClick={closeModal}>
                <S.ModalContent onClick={(e) => e.stopPropagation()}>
