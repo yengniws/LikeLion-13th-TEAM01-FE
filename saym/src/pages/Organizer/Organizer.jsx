@@ -72,7 +72,7 @@ const Organizer = () => {
                config,
             );
 
-            console.log('API 응답:', response.data);
+            // console.log('API 응답:', response.data);
 
             const { aiId } = response.data;
 
