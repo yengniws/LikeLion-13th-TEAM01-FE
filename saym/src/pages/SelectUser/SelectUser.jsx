@@ -23,7 +23,7 @@ const SelectUser = () => {
 
    return (
       <Container>
-         <Title>역할을 선택해주세요</Title>
+         <Title>유저 정보를 선택해주세요!</Title>
          <LogoCircle>
             <Logoimg src={logoimg} alt="로고" />
          </LogoCircle>

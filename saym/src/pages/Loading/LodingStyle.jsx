@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 // 화면 전체를 덮는 컨테이너 스타일
 export const LoadingContainer = styled.div`
@@ -6,13 +6,24 @@ export const LoadingContainer = styled.div`
    justify-content: center;
    align-items: center;
    width: 100%;
-   height: 90vh;
+   height: 100dvh;
 `;
 
-// 로고 이미지 스타일
+const moveUpDown = keyframes`
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px); 
+  }
+  100% {
+    transform: translateY(0);
+  }
+`;
+
 export const LogoImage = styled.img`
    width: 250px;
    max-width: 100%;
    height: auto;
-   /* 여기에 추가적인 애니메이션이나 다른 스타일을 적용할 수 있습니다 */
+   animation: ${moveUpDown} 2.5s ease-in-out infinite alternate;
 `;
