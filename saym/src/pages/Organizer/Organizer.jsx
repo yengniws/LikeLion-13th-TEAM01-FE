@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import * as S from './OrganizerStyle';
 import { IoImageOutline } from 'react-icons/io5';
 import { ToastContainer, toast } from 'react-toastify';
@@ -7,14 +7,31 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import Header from '../../components/Header/Header';
 import axiosInstance from '../../api/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../../components/Loading/Loding.jsx';
 
 const Organizer = () => {
    const [inputValue, setInputValue] = useState('');
    const [isPromo, setIsPromo] = useState(false);
    const [selectedFile, setSelectedFile] = useState(null);
+   const [isLoading, setIsLoading] = useState(true);
    const fileInputRef = useRef(null);
-   const [isLoading, setIsLoading] = useState(false);
    const navigate = useNavigate();
+
+   // 로고 이미지 로딩
+   useEffect(() => {
+      const startTime = Date.now();
+      const img = new Image();
+      img.src = '/src/assets/img/mainlogo.png';
+      img.onload = () => {
+         const elapsed = Date.now() - startTime;
+         const remainingTime = 2000 - elapsed;
+         if (remainingTime > 0) {
+            setTimeout(() => setIsLoading(false), remainingTime);
+         } else {
+            setIsLoading(false);
+         }
+      };
+   }, []);
 
    const handleIconClick = () => {
       fileInputRef.current?.click();
@@ -65,6 +82,8 @@ const Organizer = () => {
             },
          };
 
+         const startTime = Date.now();
+
          try {
             const response = await axiosInstance.post(
                '/api/v1/ai/analyze',
@@ -72,21 +91,29 @@ const Organizer = () => {
                config,
             );
 
-            // console.log('API 응답:', response.data);
-
             const { aiId } = response.data;
-
             localStorage.setItem('lastAiId', aiId);
 
-            navigate(`/airesult/${aiId}`);
+            const elapsed = Date.now() - startTime;
+            const remainingTime = 2000 - elapsed;
+            if (remainingTime > 0) {
+               setTimeout(() => {
+                  setIsLoading(false);
+                  navigate(`/airesult/${aiId}`);
+               }, remainingTime);
+            } else {
+               setIsLoading(false);
+               navigate(`/airesult/${aiId}`);
+            }
          } catch (error) {
             console.error('API 호출 에러:', error);
             toast.error('요청에 실패했습니다.');
-         } finally {
             setIsLoading(false);
          }
       }
    };
+
+   if (isLoading) return <Loading />;
 
    return (
       <>

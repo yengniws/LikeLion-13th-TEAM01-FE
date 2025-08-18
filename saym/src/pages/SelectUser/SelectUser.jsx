@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
    Container,
@@ -7,9 +8,11 @@ import {
    StyledButton,
 } from './SelectUserStyle.jsx';
 import logoimg from '../../assets/img/mainlogo.png';
+import Loading from '../../components/Loading/Loding.jsx';
 
 const SelectUser = () => {
    const navigate = useNavigate();
+   const [loading, setLoading] = useState(true);
 
    const handleSelection = (userType) => {
       if (userType === '이용객') {
@@ -20,6 +23,24 @@ const SelectUser = () => {
          navigate('/auth', { state: { userType: 'OWNER' } });
       }
    };
+
+   useEffect(() => {
+      const startTime = Date.now();
+
+      const img = new Image();
+      img.src = logoimg;
+      img.onload = () => {
+         const elapsed = Date.now() - startTime;
+         const remainingTime = 2000 - elapsed;
+         if (remainingTime > 0) {
+            setTimeout(() => setLoading(false), remainingTime);
+         } else {
+            setLoading(false);
+         }
+      };
+   }, []);
+
+   if (loading) return <Loading />;
 
    return (
       <Container>

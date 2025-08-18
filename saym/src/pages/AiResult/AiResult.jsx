@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axiosInstance from '../../api/axiosInstance';
+import Loading from '../../components/Loading/Loding';
 
 const AiResult = () => {
    const { id } = useParams(); // /airesult/:id
@@ -14,6 +15,7 @@ const AiResult = () => {
 
    useEffect(() => {
       const fetchResult = async () => {
+         const startTime = Date.now();
          try {
             const res = await axiosInstance.get(`/api/v1/ai/chat-record/${id}`);
             const data = res.data;
@@ -37,7 +39,13 @@ ${data.slogans?.map((s) => `- "${s}"`).join('\n')}
             console.error('결과 불러오기 실패:', error);
             toast.error('AI 분석 결과를 불러오지 못했습니다.');
          } finally {
-            setLoading(false);
+            const elapsed = Date.now() - startTime;
+            const remainingTime = 2000 - elapsed;
+            if (remainingTime > 0) {
+               setTimeout(() => setLoading(false), remainingTime);
+            } else {
+               setLoading(false);
+            }
          }
       };
 
@@ -51,10 +59,7 @@ ${data.slogans?.map((s) => `- "${s}"`).join('\n')}
    if (loading) {
       return (
          <>
-            <SubHeader title="AI 평가 결과" />
-            <S.AiResultContainer>
-               <p>로딩 중...</p>
-            </S.AiResultContainer>
+            <Loading />
          </>
       );
    }
