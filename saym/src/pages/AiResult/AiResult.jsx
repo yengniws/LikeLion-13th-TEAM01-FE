@@ -81,7 +81,7 @@ ${data.slogans?.map((s) => `- "${s}"`).join('\n')}
                <S.ActionButton onClick={handlePaidFeatureClick}>
                   파일 추가하고 다시 결과 보기
                </S.ActionButton>
-               <S.ActionButton primary onClick={handlePaidFeatureClick}>
+               <S.ActionButton $primary onClick={handlePaidFeatureClick}>
                   홍보하러 가기
                </S.ActionButton>
             </S.ButtonWrapper>
