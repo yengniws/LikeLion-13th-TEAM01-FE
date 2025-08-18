@@ -47,7 +47,6 @@ const Organizer = () => {
 
    const handleKeyDown = async (event) => {
       if (event.key === 'Enter') {
-         // 텍스트와 이미지가 모두 있는지 확인
          if (inputValue.trim() === '' || !selectedFile) {
             toast.error('텍스트와 이미지를 모두 입력해주세요.');
             return;
@@ -72,11 +71,17 @@ const Organizer = () => {
                formData,
                config,
             );
+
             console.log('API 응답:', response.data);
 
-            // API 응답에서 AIID 값을 추출하여 페이지 이동
-            const { id } = response.data; // 수정 필요 (aiId)
-            navigate(`/airesult/${id}`);
+            // ✅ 응답 구조에서 aiId 추출
+            const { aiId } = response.data;
+
+            // ✅ aiId를 localStorage에 저장 (다른 페이지에서도 사용 가능)
+            localStorage.setItem('lastAiId', aiId);
+
+            // ✅ 결과 페이지로 이동
+            navigate(`/airesult/${aiId}`);
          } catch (error) {
             console.error('API 호출 에러:', error);
             toast.error('요청에 실패했습니다.');
