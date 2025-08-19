@@ -14,6 +14,7 @@ const StoreDetail = () => {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [selectedCoupon, setSelectedCoupon] = useState(null);
    const [loading, setLoading] = useState(true);
+   const [couponBgLoaded, setCouponBgLoaded] = useState(false);
 
    useEffect(() => {
       const fetchStoreDetail = async () => {
@@ -58,6 +59,10 @@ const StoreDetail = () => {
                })),
             });
 
+            const img = new Image();
+            img.src = couponBg;
+            img.onload = () => setCouponBgLoaded(true);
+
             const elapsed = Date.now() - startTime;
             const remaining = 2000 - elapsed;
             setTimeout(() => setLoading(false), remaining > 0 ? remaining : 0);
@@ -71,6 +76,8 @@ const StoreDetail = () => {
    }, [storeId]);
 
    const handleCouponClick = (coupon) => {
+      if (!couponBgLoaded) return;
+
       setSelectedCoupon(coupon);
       setIsModalOpen(true);
 
@@ -88,11 +95,9 @@ const StoreDetail = () => {
          ctx.textAlign = 'center';
          ctx.textBaseline = 'middle';
 
-         // 쿠폰 이름 (중앙)
          ctx.font = '24px Arial';
          ctx.fillText(coupon.name, canvas.width / 2, canvas.height / 2 - 20);
 
-         // 가게 이름 (하단)
          ctx.font = '18px Arial';
          ctx.fillText(storeData.name, canvas.width / 2, canvas.height - 30);
 
@@ -108,7 +113,7 @@ const StoreDetail = () => {
       setSelectedCoupon(null);
    };
 
-   if (loading) {
+   if (loading || !couponBgLoaded) {
       return <LoadingScreen />;
    }
 
