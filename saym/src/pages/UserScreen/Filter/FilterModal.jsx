@@ -1,75 +1,73 @@
-// components/Modal/FilterModal.jsx
+// FilterModal.jsx
 
 import React, { useState } from 'react';
 import * as S from './FilterModalStyle';
 
-const FilterModal = ({ onClose }) => {
-   const [selectedRegion, setSelectedRegion] = useState('인천');
+const REGION_MAP = {
+   서울: 'SEOUL',
+   인천: 'INCHEON',
+   부산: 'BUSAN',
+   대구: 'DAEGU',
+   대전: 'DAEJEON',
+   광주: 'GWANGJU',
+   울산: 'ULSAN',
+   세종: 'SEJONG',
+   경기: 'GYEONGGI',
+   강원: 'GANGWON',
+   충북: 'CHUNGBUK',
+   충남: 'CHUNGNAM',
+   전북: 'JEONBUK',
+   전남: 'JEONNAM',
+   경북: 'GYEONGBUK',
+   경남: 'GYEONGNAM',
+   제주: 'JEJU',
+};
+const regions = Object.keys(REGION_MAP);
 
-   const handleContentClick = (e) => {
-      e.stopPropagation();
+// ✨ initialAreas prop을 추가로 받습니다.
+const FilterModal = ({ onClose, onApply, initialAreas = [] }) => {
+   // 부모로부터 받은 초기 지역 값으로 state를 설정합니다.
+   const [selectedRegions, setSelectedRegions] = useState(
+      initialAreas.map((apiValue) =>
+         Object.keys(REGION_MAP).find((key) => REGION_MAP[key] === apiValue),
+      ),
+   );
+
+   const handleContentClick = (e) => e.stopPropagation();
+
+   const handleRegionClick = (region) => {
+      setSelectedRegions((prev) =>
+         prev.includes(region)
+            ? prev.filter((r) => r !== region)
+            : [...prev, region],
+      );
    };
 
-   // 지역 데이터를 4개씩 그룹화
-   const regions = [
-      '서울',
-      '인천',
-      '부산',
-      '대구',
-      '대전',
-      '광주',
-      '울산',
-      '세종',
-      '경기',
-      '강원',
-      '충북',
-      '충남',
-      '전북',
-      '전남',
-      '경북',
-      '경남',
-      '제주',
-   ];
-
-   const regionRows = [];
-   for (let i = 0; i < regions.length; i += 4) {
-      regionRows.push(regions.slice(i, i + 4));
-   }
+   const handleConfirm = () => {
+      const apiAreas = selectedRegions.map((region) => REGION_MAP[region]);
+      // 부모에게 지역 배열만 전달합니다.
+      onApply(apiAreas);
+   };
 
    return (
       <S.ModalOverlay onClick={onClose}>
          <S.ModalContent onClick={handleContentClick}>
             <S.FilterGroup>
                <S.Label>원하는 지역</S.Label>
-               {regionRows.map((row, rowIndex) => (
-                  <S.RegionButtonRow key={rowIndex}>
-                     {row.map((region) => (
-                        <S.RegionButton
-                           key={region}
-                           selected={selectedRegion === region}
-                           onClick={() => setSelectedRegion(region)}
-                        >
-                           {region}
-                        </S.RegionButton>
-                     ))}
-                  </S.RegionButtonRow>
-               ))}
+               <S.RegionContainer>
+                  {regions.map((region) => (
+                     <S.RegionButton
+                        key={region}
+                        selected={selectedRegions.includes(region)}
+                        onClick={() => handleRegionClick(region)}
+                     >
+                        {region}
+                     </S.RegionButton>
+                  ))}
+               </S.RegionContainer>
             </S.FilterGroup>
 
-            <S.FilterGroup>
-               <S.Label>원하는 날짜</S.Label>
-               <S.DateInputContainer>
-                  <S.DateInput type="text" placeholder="YYYY" />
-                  <S.DateUnit>년</S.DateUnit>
-                  <S.DateInput type="text" placeholder="MM" />
-                  <S.DateUnit>월</S.DateUnit>
-                  <S.DateInput type="text" placeholder="DD" />
-                  <S.DateUnit>일</S.DateUnit>
-               </S.DateInputContainer>
-            </S.FilterGroup>
-
-            {/* 확인 버튼 추가 */}
-            <S.ConfirmButton onClick={onClose}>확인</S.ConfirmButton>
+            <S.ConfirmButton onClick={handleConfirm}>확인</S.ConfirmButton>
          </S.ModalContent>
       </S.ModalOverlay>
    );
