@@ -17,10 +17,10 @@ export const ModalOverlay = styled.div`
 
 export const ModalContent = styled.div`
    background-color: #a5d6ff;
-   padding: 25px;
+   padding: 30px;
    border-radius: 15px;
    width: 90%;
-   max-width: 400px;
+   max-width: 380px;
    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
    display: flex;
    flex-direction: column;
@@ -39,18 +39,20 @@ export const FilterGroup = styled.div`
    flex-direction: column;
    gap: 15px;
 `;
-
-export const RegionButtonRow = styled.div`
+// ✨ 모든 지역 버튼을 감싸는 새로운 컨테이너를 추가합니다.
+export const RegionContainer = styled.div`
    display: flex;
-   gap: 10px;
-   width: 100%;
-   justify-content: flex-start;
+   flex-wrap: wrap; /* 버튼들이 공간이 없으면 자동으로 다음 줄로 넘어가도록 설정 */
+   gap: 10px; /* 버튼 사이의 간격 */
 `;
 
 export const RegionButton = styled.button`
-   width: 70px;
-   flex-shrink: 0;
-   flex-grow: 0;
+   /* width를 삭제하고 flex-grow: 1로 변경하여 유연하게 만듭니다. */
+   /* width: 70px; */
+   flex-grow: 0; /* 같은 줄에 있는 버튼들이 공간을 균등하게 나눠 가짐 */
+   flex-basis: 70px; /* 버튼의 최소 너비를 설정 */
+
+   /* 나머지 스타일은 그대로 유지 */
    padding: 8px;
    border-radius: 20px;
    border: none;
