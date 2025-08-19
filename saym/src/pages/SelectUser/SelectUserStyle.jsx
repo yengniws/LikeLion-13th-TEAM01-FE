@@ -6,7 +6,7 @@ export const Container = styled.div`
    flex-direction: column; /* 아이템을 세로로 정렬 */
    justify-content: center; /* 세로 중앙 정렬 */
    align-items: center; /* 가로 중앙 정렬 */
-   height: 100vh;
+   height: 100dvh;
    padding: 20px;
 `;
 
