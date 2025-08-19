@@ -6,59 +6,51 @@ import {
    FaBookmark,
    FaRegBookmark,
 } from 'react-icons/fa';
+import ClipLoader from 'react-spinners/ClipLoader';
 
-//필요한 모듈들을 가져옵니다.
-import axiosInstance from '../../api/AxiosInstance'; // API 호출을 위한 axios 인스턴스
+import axiosInstance from '../../api/AxiosInstance';
 import * as S from './UserScreenStyle';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
 import FilterModal from './Filter/FilterModal';
-import LoadingPage from '../../components/Loading/Loding'; // 로딩 컴포넌트
+import LoadingPage from '../../components/Loading/Loding';
 
 const UserScreen = () => {
    const navigate = useNavigate();
 
-   //API로부터 받아온 데이터를 저장할 상태와 로딩, 에러 상태를 추가합니다.
    const [events, setEvents] = useState([]);
    const [loading, setLoading] = useState(true);
+   const [filterLoading, setFilterLoading] = useState(false);
    const [error, setError] = useState(null);
 
    const [bookmarkedEvents, setBookmarkedEvents] = useState([]);
    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-   // ✨ 1. 정렬 메뉴의 열림 상태와 정렬 기준 상태를 추가합니다.
    const [isSortOpen, setIsSortOpen] = useState(false);
-   const [sortOrder, setSortOrder] = useState('date'); // 'date' 또는 'name'
+   const [sortOrder, setSortOrder] = useState('date');
 
    const [selectedAreas, setSelectedAreas] = useState([]);
 
-   // 필터 조건 저장
-   const [filters, setFilters] = useState({
-      areas: [], // 선택된 지역 목록
-      date: null, // 선택된 날짜 (YYYY-MM-DD 형식)
-   });
-
-   //컴포넌트가 처음 렌더링될 때 API를 호출하여 이벤트 목록을 가져옵니다.
    useEffect(() => {
       const fetchEvents = async () => {
-         setLoading(true);
-         setError(null);
+         if (events.length === 0) {
+            setLoading(true);
+         } else {
+            setFilterLoading(true);
+         }
 
+         setError(null);
          const startTime = Date.now();
-         console.log('🚀 API 요청 시작. 필터 지역:', selectedAreas);
 
          try {
             let eventsRes;
             const hasFilters = selectedAreas.length > 0;
 
             if (hasFilters) {
-               // 지역 필터가 있을 경우 filter API 호출
                const params = { areas: selectedAreas.join(',') };
-               console.log('🔍 필터 API 호출. 파라미터:', params);
                eventsRes = await axiosInstance.get('/api/v1/event/filter', {
                   params,
                });
             } else {
-               // console.log('📖 전체 목록 API 호출.');
                eventsRes = await axiosInstance.get('/api/v1/event');
             }
 
@@ -85,10 +77,21 @@ const UserScreen = () => {
          } finally {
             const elapsed = Date.now() - startTime;
             const remaining = 2000 - elapsed;
-            if (remaining > 0) {
-               setTimeout(() => setLoading(false), remaining);
+
+            if (events.length === 0) {
+               // 첫 로딩일 경우 전체 페이지 로딩
+               if (remaining > 0) {
+                  setTimeout(() => setLoading(false), remaining);
+               } else {
+                  setLoading(false);
+               }
             } else {
-               setLoading(false);
+               // 필터 재조회일 경우 스피너만
+               if (remaining > 0) {
+                  setTimeout(() => setFilterLoading(false), remaining);
+               } else {
+                  setFilterLoading(false);
+               }
             }
          }
       };
@@ -96,9 +99,7 @@ const UserScreen = () => {
       fetchEvents();
    }, [selectedAreas]);
 
-   // events나 sortOrder가 변경될 때만 재정렬을 수행하여 효율적입니다.
    const sortedEvents = useMemo(() => {
-      // ... 정렬 로직 ...
       const sortableEvents = [...events];
       if (sortOrder === 'name') {
          return sortableEvents.sort((a, b) => a.title.localeCompare(b.title));
@@ -113,58 +114,34 @@ const UserScreen = () => {
    const closeFilterModal = () => setIsFilterOpen(false);
    const handleCardClick = (eventId) => navigate(`/event/${eventId}`);
 
-   // ✨ 3. 필터 적용 핸들러가 지역 배열을 직접 받도록 수정합니다.
    const handleFilterApply = (appliedAreas) => {
-      setSelectedAreas(appliedAreas); // 필터 상태 업데이트
+      setSelectedAreas(appliedAreas);
       closeFilterModal();
    };
 
-   // ✨ [핵심] 북마크 클릭 시 서버와 통신하는 로직으로 변경
+   // 북마크는 추가만 가능
    const handleBookmarkClick = async (e, eventId) => {
-      e.stopPropagation(); // 카드 전체 클릭 방지
+      e.stopPropagation();
 
-      // 현재 북마크 되어있는지 확인
       const isBookmarked = bookmarkedEvents.includes(eventId);
-
-      // 먼저 화면을 즉시 업데이트하여 사용자 경험을 좋게 합니다 (Optimistic Update).
-      const originalBookmarks = [...bookmarkedEvents]; // ✨ 만약의 경우를 대비해 원래 상태를 저장
-      if (isBookmarked) {
-         setBookmarkedEvents((prev) => prev.filter((id) => id !== eventId));
-      } else {
-         setBookmarkedEvents((prev) => [...prev, eventId]);
-      }
+      if (isBookmarked) return;
 
       try {
-         if (isBookmarked) {
-            // ✨ [확인 포인트 3] 어떤 요청을 보내는지 콘솔에 출력
-            console.log(`🚀 ${eventId}번 이벤트 북마크 삭제 요청`);
-            const res = await axiosInstance.delete(
-               `/api/v1/event/bookmark/${eventId}`,
-            );
-            // ✨ [확인 포인트 4] 서버로부터 받은 응답을 콘솔에 출력
-            console.log('✅ 북마크 삭제 성공 응답:', res);
-         } else {
-            console.log(`🚀 ${eventId}번 이벤트 북마크 추가 요청`);
-            const res = await axiosInstance.post(
-               `/api/v1/event/bookmark/${eventId}`,
-            );
-            console.log('✅ 북마크 추가 성공 응답:', res);
-         }
+         setBookmarkedEvents((prev) => [...prev, eventId]);
+         await axiosInstance.post(`/api/v1/event/bookmark/${eventId}`);
       } catch (err) {
-         // ✨ [확인 포인트 5] 에러 발생 시 콘솔에 출력
-         console.error('❌ 북마크 처리 중 에러 발생:', err);
+         console.error('❌ 북마크 추가 중 에러 발생:', err);
          alert('북마크 처리에 실패했습니다. 다시 시도해주세요.');
-         setBookmarkedEvents(originalBookmarks);
+         setBookmarkedEvents((prev) => prev.filter((id) => id !== eventId));
       }
    };
 
-   // 정렬 옵션 선택 시 처리할 함수
    const handleSortSelect = (order) => {
       setSortOrder(order);
-      setIsSortOpen(false); // 옵션 선택 후 드롭다운 닫기
+      setIsSortOpen(false);
    };
 
-   // 로딩 및 에러 상태에 따라 다른 UI를 보여줍니다.
+   // 첫 진입 시 전체 로딩
    if (loading) return <LoadingPage />;
    if (error) return <div>{error}</div>;
 
@@ -202,35 +179,55 @@ const UserScreen = () => {
             />
          )}
 
-         <S.EventList>
-            {/* 5. 기존 dummyEvents 대신 API로 받아온 events 상태를 사용합니다. */}
-            {sortedEvents.map((event) => {
-               const isBookmarked = bookmarkedEvents.includes(event.id);
-               return (
-                  <S.EventCardContainer
-                     key={event.id}
-                     onClick={() => handleCardClick(event.id)}
-                  >
-                     {/* imageUrl을 props로 전달하여 이미지를 표시합니다. */}
-                     <S.EventImage src={event.imageUrl} alt={event.title} />
-                     <S.EventInfo>
-                        <S.EventTitle>{event.title}</S.EventTitle>
-                        <S.EventDate>{event.date}</S.EventDate>
-                     </S.EventInfo>
-                     <S.BookmarkIconWrapper
-                        $isBookmarked={isBookmarked} // 👈 isBookmarked 앞에 '$' 추가
-                        onClick={(e) => handleBookmarkClick(e, event.id)}
+         {/* 필터 적용 시 스피너만 */}
+         {filterLoading ? (
+            <div
+               style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  padding: '20px',
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '100vw',
+                  height: '100vh',
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  zIndex: 1000,
+               }}
+            >
+               <ClipLoader size={35} color="#4daeff" />
+            </div>
+         ) : (
+            <S.EventList>
+               {sortedEvents.map((event) => {
+                  const isBookmarked = bookmarkedEvents.includes(event.id);
+                  return (
+                     <S.EventCardContainer
+                        key={event.id}
+                        onClick={() => handleCardClick(event.id)}
                      >
-                        {isBookmarked ? (
-                           <FaBookmark size={22} />
-                        ) : (
-                           <FaRegBookmark size={22} />
-                        )}
-                     </S.BookmarkIconWrapper>
-                  </S.EventCardContainer>
-               );
-            })}
-         </S.EventList>
+                        <S.EventImage src={event.imageUrl} alt={event.title} />
+                        <S.EventInfo>
+                           <S.EventTitle>{event.title}</S.EventTitle>
+                           <S.EventDate>{event.date}</S.EventDate>
+                        </S.EventInfo>
+                        <S.BookmarkIconWrapper
+                           $isBookmarked={isBookmarked}
+                           onClick={(e) => handleBookmarkClick(e, event.id)}
+                        >
+                           {isBookmarked ? (
+                              <FaBookmark size={22} />
+                           ) : (
+                              <FaRegBookmark size={22} />
+                           )}
+                        </S.BookmarkIconWrapper>
+                     </S.EventCardContainer>
+                  );
+               })}
+            </S.EventList>
+         )}
       </S.PageContainer>
    );
 };
