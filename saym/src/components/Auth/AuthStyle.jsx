@@ -14,7 +14,7 @@ export const AuthTxt = styled.div`
    top: 40px;
    left: 30px;
    font-size: 27px;
-   font-weight: 600;
+   font-weight: var(--font-weight-medium);
    color: #000;
    line-height: 1.4;
    letter-spacing: -0.1px;

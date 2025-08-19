@@ -1,12 +1,11 @@
 import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 import PretendardRegular from '../assets/font/Pretendard-Light.otf';
+import PretendardMedium from '../assets/font/Pretendard-Medium.otf';
 
 const GlobalStyle = createGlobalStyle`
-  /* 1. reset.css 적용 */
   ${reset}
 
-  /* 2. 공통 폰트 및 전역 스타일 */
   * {
     box-sizing: border-box;
   }
@@ -15,31 +14,39 @@ const GlobalStyle = createGlobalStyle`
     font-family: 'Pretendard';
     font-weight: 400;
     font-style: normal;
-    src: url(${PretendardRegular}) format('truetype');
+    src: url(${PretendardRegular}) format('opentype');
   }
 
+  @font-face {
+    font-family: 'Pretendard';
+    font-weight: 500;
+    font-style: normal;
+    src: url(${PretendardMedium}) format('opentype');
+  }
+
+  :root {
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+  }
 
   body {
     font-family: 'Pretendard', sans-serif;
+    font-weight: var(--font-weight-regular);
     background-color: white;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     padding: 0;
-
-    /* 3. 화면 규격 사이즈 고정 (중앙 정렬) */
     height: 100%;
   }
 
   #root {
-    /* 모바일 앱 화면 규격 */
     width: 100%;
     max-width: 390px;
     min-height: 100svh;
     margin: 0 auto;
     background-color: #fff;
-
-    /* 스크롤 시 iOS에서 부드럽게 */
     -webkit-overflow-scrolling: touch;
   }
 `;
