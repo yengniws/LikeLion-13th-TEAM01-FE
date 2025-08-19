@@ -20,8 +20,8 @@ export const Title = styled.h1`
 
 // 프로필 이미지가 들어갈 원
 export const LogoCircle = styled.div`
-   margin-top: 40px;
-   margin-bottom: 40px; /* 아래 버튼과의 간격 */
+   margin-top: 20px;
+   margin-bottom: 20px; /* 아래 버튼과의 간격 */
    display: flex;
    justify-content: center; /* 가로 가운데 */
 `;
