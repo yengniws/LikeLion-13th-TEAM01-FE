@@ -34,6 +34,7 @@ export const Input = styled.input`
    margin: 5px 0px;
    border: 1.5px solid #ddd;
    border-radius: 10px;
+   font-size: 16px;
 
    &::placeholder {
       color: #ccc;
@@ -59,6 +60,7 @@ export const Select = styled.select`
    border: 1.5px solid #ddd;
    border-radius: 10px;
    font-weight: 500;
+   font-size: 16px;
 
    &:focus {
       outline: none;
