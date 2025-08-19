@@ -126,9 +126,11 @@ const UserScreen = () => {
 
       try {
          if (isBookmarked) {
+            // 북마크 해제
             setBookmarkedEvents((prev) => prev.filter((id) => id !== eventId));
             await axiosInstance.delete(`/api/v1/event/bookmark/${eventId}`);
          } else {
+            // 북마크 추가
             setBookmarkedEvents((prev) => [...prev, eventId]);
             await axiosInstance.post(`/api/v1/event/bookmark/${eventId}`);
          }

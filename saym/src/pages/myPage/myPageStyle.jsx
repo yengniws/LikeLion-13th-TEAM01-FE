@@ -121,6 +121,7 @@ export const EventItem = styled.div`
    display: flex;
    align-items: center;
    padding: 10px 0;
+   cursor: pointer;
    &:not(:last-child) {
       border-bottom: 1px solid #ddd;
    }

@@ -75,22 +75,18 @@ const EventDetail = () => {
    const handleBookmark = async () => {
       try {
          if (isBookmarked) {
-            const res = await axiosInstance.delete(
-               `/api/v1/event/bookmark/${id}`,
-            );
-            if (res.data.statusCode === 200) {
-               setIsBookmarked(false);
-            }
+            // 북마크 해제
+            setIsBookmarked(false);
+            await axiosInstance.delete(`/api/v1/event/bookmark/${id}`);
          } else {
-            const res = await axiosInstance.post(
-               `/api/v1/event/bookmark/${id}`,
-            );
-            if (res.data.statusCode === 200) {
-               setIsBookmarked(true);
-            }
+            // 북마크 추가
+            setIsBookmarked(true);
+            await axiosInstance.post(`/api/v1/event/bookmark/${id}`);
          }
       } catch (error) {
          console.error('북마크 처리 실패:', error);
+
+         setIsBookmarked((prev) => !prev);
       }
    };
 
