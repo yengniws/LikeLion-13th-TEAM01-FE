@@ -16,7 +16,7 @@ const KakaoRedirectHandler = () => {
             .then((res) => {
                const { accessToken, refreshToken, userType, approvalStatus } =
                   res.data.data || {};
-               // console.log('카카오 로그인 응답:', res.data);
+               console.log('카카오 로그인 응답:', res.data);
 
                if (!accessToken || !refreshToken) throw new Error('토큰 없음');
 

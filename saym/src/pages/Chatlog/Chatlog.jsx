@@ -23,6 +23,7 @@ const Chatlog = () => {
                date: new Date(item.chatDate).toLocaleDateString('ko-KR'),
                thumbnail: item.imageUrl || '/default-thumbnail.png',
             }));
+            console.log('기록 불러오기 성공:', formattedData);
 
             setChatlogs(formattedData);
 
