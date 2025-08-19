@@ -38,7 +38,7 @@ export const StyledButton = styled.button`
    width: 100%;
    max-width: 300px; // 버튼의 최대 너비 제한
    padding: 15px;
-   margin-bottom: 20px;
+   margin-bottom: 10px;
    border: none;
    border-radius: 12px;
    background-color: #4daeff; // 이미지의 버튼 색상
