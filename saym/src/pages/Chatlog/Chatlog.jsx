@@ -1,93 +1,80 @@
+import { useEffect, useState } from 'react';
 import * as S from './ChatlogStyle';
 import SubHeader from '../../components/SubHeader/SubHeader';
-import ThumbnailImage from '../../assets/img/chatlog_img.png'; // 임의 이미지
 import { useNavigate } from 'react-router-dom';
-
-const dummyChatlogs = [
-   {
-      id: 1,
-      title: '어쩌구 저쩌구 기획을 했는데 평가해줘',
-      date: '2025/07/31',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 2,
-      title: '새로운 이벤트 아이디어 좀 봐주세요',
-      date: '2025/07/28',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 3,
-      title: '어쩌구 저쩌구 기획을 했는데 평가해줘',
-      date: '2025/07/31',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 4,
-      title: '새로운 이벤트 아이디어 좀 봐주세요',
-      date: '2025/07/28',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 5,
-      title: '어쩌구 저쩌구 기획을 했는데 평가해줘',
-      date: '2025/07/31',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 6,
-      title: '새로운 이벤트 아이디어 좀 봐주세요',
-      date: '2025/07/28',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 7,
-      title: '어쩌구 저쩌구 기획을 했는데 평가해줘',
-      date: '2025/07/31',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 8,
-      title: '새로운 이벤트 아이디어 좀 봐주세요',
-      date: '2025/07/28',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 9,
-      title: '어쩌구 저쩌구 기획을 했는데 평가해줘',
-      date: '2025/07/31',
-      thumbnail: ThumbnailImage,
-   },
-   {
-      id: 10,
-      title: '새로운 이벤트 아이디어 좀 봐주세요',
-      date: '2025/07/28',
-      thumbnail: ThumbnailImage,
-   },
-];
+import axiosInstance from '../../api/axiosInstance';
+import LoadingPage from '../../components/Loading/Loding';
 
 const Chatlog = () => {
    const navigate = useNavigate();
+   const [chatlogs, setChatlogs] = useState([]);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState(null);
+   const [imagesLoaded, setImagesLoaded] = useState(false);
+
+   useEffect(() => {
+      const fetchChatlogs = async () => {
+         try {
+            const res = await axiosInstance.get('/api/v1/ai/all-record');
+
+            const formattedData = res.data.map((item) => ({
+               id: item.aiId,
+               title: item.chatContent,
+               date: new Date(item.chatDate).toLocaleDateString('ko-KR'),
+               thumbnail: item.imageUrl || '/default-thumbnail.png',
+            }));
+
+            setChatlogs(formattedData);
+
+            const imagePromises = formattedData.map(
+               (item) =>
+                  new Promise((resolve) => {
+                     const img = new Image();
+                     img.src = item.thumbnail;
+                     img.onload = resolve;
+                     img.onerror = resolve;
+                  }),
+            );
+
+            await Promise.all(imagePromises);
+            setImagesLoaded(true);
+         } catch (err) {
+            console.error('기록 불러오기 실패:', err);
+            setError('기록을 불러오는 중 오류가 발생했습니다.');
+         }
+      };
+
+      fetchChatlogs();
+   }, []);
+
+   useEffect(() => {
+      if (imagesLoaded || error) {
+         const timer = setTimeout(() => setLoading(false), 2000);
+         return () => clearTimeout(timer);
+      }
+   }, [imagesLoaded, error]);
+
+   if (loading) return <LoadingPage />;
+   if (error) return <div>{error}</div>;
+
    return (
-      <>
-         <S.ChatlogContainer>
-            <SubHeader title="기록" />
-            <S.LogList>
-               {dummyChatlogs.map((log) => (
-                  <S.LogItem
-                     key={log.id}
-                     onClick={() => navigate(`/airesult/${log.id}`)}
-                  >
-                     <S.Thumbnail src={log.thumbnail} alt="기획안 이미지" />
-                     <S.InfoWrapper>
-                        <S.Title>{log.title}</S.Title>
-                        <S.Date>{log.date}</S.Date>
-                     </S.InfoWrapper>
-                  </S.LogItem>
-               ))}
-            </S.LogList>
-         </S.ChatlogContainer>
-      </>
+      <S.ChatlogContainer>
+         <SubHeader title="기록" />
+         <S.LogList>
+            {chatlogs.map((log) => (
+               <S.LogItem
+                  key={log.id}
+                  onClick={() => navigate(`/airesult/${log.id}`)}
+               >
+                  <S.Thumbnail src={log.thumbnail} alt="기획안 이미지" />
+                  <S.InfoWrapper>
+                     <S.Title>{log.title}</S.Title>
+                     <S.Date>{log.date}</S.Date>
+                  </S.InfoWrapper>
+               </S.LogItem>
+            ))}
+         </S.LogList>
+      </S.ChatlogContainer>
    );
 };
 

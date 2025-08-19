@@ -1,4 +1,4 @@
-export const useKakaoAddressFinder = (setStoreData) => {
+export const useKakaoAddressFinder = (onAddressSelected) => {
    const openPostcode = () => {
       if (!window.daum) {
          alert('우편번호 api 로드 실패');
@@ -24,15 +24,10 @@ export const useKakaoAddressFinder = (setStoreData) => {
                addr = data.jibunAddress;
             }
 
-            setStoreData((prev) => ({
-               ...prev,
-               address: {
-                  ...prev.address,
-                  zipcode: data.zonecode,
-                  mainAddress: addr,
-                  extraAddress: extraAddr,
-               },
-            }));
+            onAddressSelected({
+               mainAddress: addr,
+               detailAddress: extraAddr,
+            });
          },
       }).open();
    };

@@ -42,7 +42,7 @@ export const BackendDataContainer = styled.div`
 export const PredictionBox = styled.div`
    background-color: #fff9a6;
    border-radius: 15px;
-   padding: 0px 15px;
+   padding: 15px 15px;
    font-weight: 600;
    white-space: pre-wrap;
    margin-bottom: 20px;

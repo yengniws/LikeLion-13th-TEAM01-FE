@@ -13,13 +13,15 @@ export const Container = styled.div`
 // "유저 정보를 선택해주세요" 텍스트
 export const Title = styled.h1`
    font-size: 1.5rem; // 24px
-   font-weight: 600;
-   margin-bottom: 60px;
+   font-weight: 800;
+   margin-bottom: 30px;
+   margin-top: 20px;
 `;
 
 // 프로필 이미지가 들어갈 원
 export const LogoCircle = styled.div`
-   margin-bottom: 80px; /* 아래 버튼과의 간격 */
+   margin-top: 40px;
+   margin-bottom: 40px; /* 아래 버튼과의 간격 */
    display: flex;
    justify-content: center; /* 가로 가운데 */
 `;

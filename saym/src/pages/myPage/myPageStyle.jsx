@@ -30,7 +30,7 @@ export const ProfileSection = styled.div`
    padding-bottom: 10px;
 `;
 
-export const ProfileImage = styled.div`
+export const ProfileImage = styled.img`
    width: 70px;
    height: 70px;
    background-color: #d9d9d9;
@@ -126,7 +126,7 @@ export const EventItem = styled.div`
    }
 `;
 
-export const EventImage = styled.div`
+export const EventImage = styled.img`
    width: 50px;
    height: 50px;
    background-color: #d9d9d9;
@@ -159,6 +159,20 @@ export const ActionButton = styled.button`
    }
 `;
 
+export const ActionButtonStore = styled.button`
+   background-color: #e1c9ff;
+   color: #333;
+   border: none;
+   border-radius: 10px;
+   padding: 15px;
+   font-size: 16px;
+   font-weight: bold;
+   cursor: pointer;
+   &:hover {
+      background-color: #c99fff;
+   }
+`;
+
 export const Footer = styled.div`
    display: flex;
    justify-content: space-between;
@@ -169,4 +183,12 @@ export const FooterLink = styled.a`
    font-size: 14px;
    color: #888;
    text-decoration: none;
+`;
+
+export const NoEventMessage = styled.div`
+   width: 100%;
+   text-align: center;
+   color: #aaa;
+   font-size: 16px;
+   padding: 30px 0;
 `;
