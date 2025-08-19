@@ -92,7 +92,7 @@ export const Divider = styled.hr`
 export const SavedEventsSection = styled.div`
    background-color: #fffacd;
    border-radius: 10px;
-   padding: 15px;
+   padding: 12px 15px;
    margin: 20px 0px;
 `;
 
@@ -120,7 +120,7 @@ export const EventsList = styled.div`
 export const EventItem = styled.div`
    display: flex;
    align-items: center;
-   padding: 10px 0;
+   padding: 5px 0;
    cursor: pointer;
    &:not(:last-child) {
       border-bottom: 1px solid #ddd;
@@ -151,7 +151,7 @@ export const ActionButton = styled.button`
    color: #333;
    border: none;
    border-radius: 10px;
-   padding: 15px;
+   padding: 12px;
    font-size: 16px;
    font-weight: bold;
    cursor: pointer;
@@ -165,7 +165,7 @@ export const ActionButtonStore = styled.button`
    color: #333;
    border: none;
    border-radius: 10px;
-   padding: 15px;
+   padding: 12px;
    font-size: 16px;
    font-weight: bold;
    cursor: pointer;
