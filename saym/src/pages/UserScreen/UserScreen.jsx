@@ -42,6 +42,8 @@ const UserScreen = () => {
       const fetchEvents = async () => {
          setLoading(true);
          setError(null);
+
+         const startTime = Date.now();
          console.log('🚀 API 요청 시작. 필터 지역:', selectedAreas);
 
          try {
@@ -50,47 +52,49 @@ const UserScreen = () => {
 
             if (hasFilters) {
                // 지역 필터가 있을 경우 filter API 호출
-               const params = { areas: selectedAreas.join(',') }; // API 명세에 따라 콤마로 구분된 문자열로 전달
+               const params = { areas: selectedAreas.join(',') };
                console.log('🔍 필터 API 호출. 파라미터:', params);
                eventsRes = await axiosInstance.get('/api/v1/event/filter', {
                   params,
                });
             } else {
-               // 필터가 없으면 전체 목록 API 호출
-               console.log('📖 전체 목록 API 호출.');
+               // console.log('📖 전체 목록 API 호출.');
                eventsRes = await axiosInstance.get('/api/v1/event');
             }
 
-            // 북마크 목록은 항상 불러옵니다.
             const bookmarksRes = await axiosInstance.get(
                '/api/v1/event/bookmark',
             );
 
-            // API 응답 데이터(res.data.data)를 화면에 맞는 형식으로 가공(mapping)합니다.
             const formattedData = eventsRes.data.data.map((item) => ({
                id: item.eventId,
                title: item.eventName,
-               // 날짜 형식을 'YYYY/MM/DD~YYYY/MM/DD'로 변경합니다.
                date: `${item.eventStartDate.replaceAll('-', '/')}~${item.eventEndDate.replaceAll('-', '/')}`,
-               imageUrl: item.pictureUrl || '/default-event-image.png', // 기본 이미지 설정
+               imageUrl: item.pictureUrl || '/default-event-image.png',
             }));
 
             const bookmarkedIds = bookmarksRes.data.data.map(
                (item) => item.eventId,
             );
 
-            setEvents(formattedData); // 가공된 데이터를 state에 저장합니다.
+            setEvents(formattedData);
             setBookmarkedEvents(bookmarkedIds);
          } catch (err) {
             console.error('❌ 이벤트 목록 로딩 실패:', err);
             setError('데이터를 불러오는 중 오류가 발생했습니다.');
          } finally {
-            setLoading(false);
+            const elapsed = Date.now() - startTime;
+            const remaining = 2000 - elapsed;
+            if (remaining > 0) {
+               setTimeout(() => setLoading(false), remaining);
+            } else {
+               setLoading(false);
+            }
          }
       };
 
       fetchEvents();
-   }, [selectedAreas]); // 빈 배열을 전달하여 컴포넌트가 처음 마운트될 때 한 번만 실행되도록 합니다.
+   }, [selectedAreas]);
 
    // events나 sortOrder가 변경될 때만 재정렬을 수행하여 효율적입니다.
    const sortedEvents = useMemo(() => {
