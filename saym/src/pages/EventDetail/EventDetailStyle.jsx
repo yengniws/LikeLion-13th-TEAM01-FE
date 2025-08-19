@@ -87,14 +87,17 @@ export const ContentSection = styled.div`
    font-size: 16px;
    line-height: 1.6;
    min-height: 150px;
+   height: 120px; /* 고정 높이 지정 (또는 필요에 따라 조절) */
+   gap: 10px;
 `;
 
 export const DescriptionText = styled.p`
-   margin: 30px 25px;
+   margin: 30px 25px 0 25px;
    text-align: left;
-   display: flex;
-   align-items: left;
-   justify-content: center;
+   flex-grow: 1; /* 내용 영역이 남는 공간 모두 차지 */
+   overflow-y: auto; /* y축 스크롤 활성화 */
+   max-height: 100%; /* 최대 높이 제한 */
+   display: block; /* flex 제거 및 블록 기본 특성 유지 */
 `;
 
 export const FindRoute = styled.p`
@@ -106,6 +109,7 @@ export const FindRoute = styled.p`
    padding: 0;
    text-align: center;
    margin-top: 16px;
+   /* 주소를 항상 하단에 남게 하기 위해 flex 아이템 기본 동작 유지 */
 `;
 
 // --- 하단 (근처 맛집) ---

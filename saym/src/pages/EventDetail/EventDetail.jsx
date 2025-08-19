@@ -130,7 +130,7 @@ const EventDetail = () => {
                   {event.content}
                   <br />
                </S.DescriptionText>
-               <S.FindRoute>+ 주소: {event.addless || '정보 없음'}</S.FindRoute>
+               <S.FindRoute>주소 : {event.addless || '정보 없음'}</S.FindRoute>
             </S.ContentSection>
 
             <S.Divider />
