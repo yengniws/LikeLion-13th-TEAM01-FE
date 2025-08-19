@@ -23,7 +23,7 @@ export const ContentWrapper = styled.div`
 // --- 상단 (이미지, 제목, 날짜) ---
 export const EventHeaderContainer = styled.div`
    display: flex;
-   gap: 16px;
+   gap: 30px;
    margin-bottom: 16px;
 `;
 
@@ -45,12 +45,18 @@ export const TitleWrapper = styled.div`
    display: flex;
    /* justify-content: space-between; */ /* <- 이 줄을 삭제하거나 주석 처리하세요 */
    align-items: center;
+   gap: 15px; /* <- 제목과 아이콘 사이의 간격을 위해 이 줄을 추가하세요 */
+   width: 180px;
+   line-height: 1.2;
+   align-items: center;
    margin-bottom: 8px;
-   gap: 8px; /* <- 제목과 아이콘 사이의 간격을 위해 이 줄을 추가하세요 */
+   position: relative;
+   line-height: 1.3;
+   margin-top: 10px;
 `;
 
 export const EventTitle = styled.h1`
-   font-size: 22px;
+   font-size: 20px;
    font-weight: bold;
    margin: 0;
 `;
@@ -59,13 +65,15 @@ export const BookmarkWrapper = styled.div`
    cursor: pointer;
    display: flex; // 아이콘의 정렬을 위해 추가
    align-items: center; // 아이콘의 정렬을 위해 추가
+   cursor: pointer;
+   margin-left: 10px;
 `;
 
 export const EventDate = styled.p`
    font-size: 14px;
    color: #888;
    margin: 4px 0 0;
-   padding-top: 40px;
+   padding-top: 10px;
 `;
 
 // --- 중간 (자세한 내용, 길찾기) ---
@@ -82,8 +90,11 @@ export const ContentSection = styled.div`
 `;
 
 export const DescriptionText = styled.p`
-   margin: 10px;
+   margin: 30px 25px;
    text-align: left;
+   display: flex;
+   align-items: left;
+   justify-content: center;
 `;
 
 export const FindRoute = styled.p`
@@ -129,16 +140,34 @@ export const PlaceList = styled.div`
 
 export const PlaceCard = styled.div`
    width: 105px;
-   height: 105px;
-   background-color: #f0f0f0;
-   border-radius: 8px;
-   flex-shrink: 0; /* 아이템 크기가 줄어들지 않도록 설정 */
-
-   /* 카드 내 텍스트 스타일 (예시) */
+   flex-shrink: 0;
    display: flex;
-   justify-content: center;
+   flex-direction: column; /* 세로 배치 */
    align-items: center;
-   font-size: 14px;
+   border-radius: 8px;
+   background-color: #f9f9f9;
+   overflow: hidden;
+`;
+
+export const PlaceImageWrapper = styled.div`
+   width: 100px;
+   height: 100px;
+   border-radius: 8px;
+   overflow: hidden;
+   background-color: #eee;
+   margin-bottom: 6px;
+   flex-shrink: 0;
+`;
+
+export const PlaceName = styled.div`
+   font-size: 13px;
+   font-weight: 500;
+   text-align: center;
+   width: 100%;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   color: black;
 `;
 
 export const DotIndicatorContainer = styled.div`

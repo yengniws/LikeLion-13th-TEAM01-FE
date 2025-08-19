@@ -9,6 +9,7 @@ import LoadingPage from '../../components/Loading/Loding';
 
 const EventDetail = () => {
    const { id } = useParams();
+   const eventId = Number(id);
    const scrollRef = useHorizontalScroll();
 
    const [event, setEvent] = useState(null);
@@ -32,11 +33,17 @@ const EventDetail = () => {
 
             // 근처 맛집 조회
             const restaurantRes = await axiosInstance.get(
-               `/api/v1/event/detail/store/${id}`,
+               `/api/v1/event/detail/store/${eventId}`,
             );
+            console.log('근처 맛집 응답:', restaurantRes.data);
 
-            if (Array.isArray(restaurantRes.data)) {
+            if (
+               Array.isArray(restaurantRes.data) &&
+               restaurantRes.data.length > 0
+            ) {
                setRestaurants(restaurantRes.data.slice(0, 3));
+            } else {
+               console.warn('맛집 데이터 없음:', restaurantRes.data);
             }
 
             // 북마크 목록 조회 -> 현재 이벤트가 포함되어 있는지 확인
@@ -69,7 +76,7 @@ const EventDetail = () => {
    const handleBookmark = async () => {
       try {
          const res = await axiosInstance.post(`/api/v1/event/bookmark/${id}`);
-         if (res.data.statusCode === 0) {
+         if (res.data.statusCode === 200) {
             setIsBookmarked(true); // 해제 API 없으므로 true만 설정
          }
       } catch (error) {
@@ -137,7 +144,30 @@ const EventDetail = () => {
                         key={restaurant.id}
                         style={{ textDecoration: 'none' }}
                      >
-                        <S.PlaceCard>{restaurant.name}</S.PlaceCard>
+                        <S.PlaceCard>
+                           <S.PlaceImageWrapper>
+                              {restaurant.pictureUrl ? (
+                                 <img
+                                    src={restaurant.pictureUrl}
+                                    alt={restaurant.name}
+                                    style={{
+                                       width: '100%',
+                                       height: '100%',
+                                       objectFit: 'cover',
+                                    }}
+                                 />
+                              ) : (
+                                 <div
+                                    style={{
+                                       width: '100%',
+                                       height: '100%',
+                                       backgroundColor: '#ddd',
+                                    }}
+                                 />
+                              )}
+                           </S.PlaceImageWrapper>
+                           <S.PlaceName>{restaurant.name}</S.PlaceName>
+                        </S.PlaceCard>
                      </Link>
                   ))}
                </S.PlaceList>

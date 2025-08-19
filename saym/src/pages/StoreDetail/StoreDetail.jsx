@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import * as S from './StoreDetailStyle';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
-import { FaMapMarkerAlt, FaCommentDots, FaDownload } from 'react-icons/fa';
-import { FaPen } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaDownload } from 'react-icons/fa';
 import { LuNotebookPen } from 'react-icons/lu';
-import couponBg from '../../assets/img/couponBgImage.png'; // 쿠폰 배경 이미지
+import couponBg from '../../assets/img/couponBgImage.png';
 
 const storeData = {
    name: '가게 이름',
@@ -96,11 +95,6 @@ const StoreDetail = () => {
                      영업시간 : {storeData.operatingHours}
                   </S.OperatingHours>
                </S.InfoTextWrapper>
-               {isOwner && (
-                  <S.EditButton>
-                     <FaPen /> &nbsp;가게 정보 수정
-                  </S.EditButton>
-               )}
             </S.StoreInfoSection>
 
             {/* 쿠폰 섹션 */}
@@ -145,9 +139,6 @@ const StoreDetail = () => {
                <S.SectionHeader>
                   <S.SectionTitle>
                      리뷰 <LuNotebookPen size={20} />
-                     <S.WriteReviewLink href="#">
-                        + 리뷰 작성하러 가기
-                     </S.WriteReviewLink>
                   </S.SectionTitle>
                </S.SectionHeader>
                <S.InfoBox>
