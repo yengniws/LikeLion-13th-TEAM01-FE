@@ -1,87 +1,108 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import * as S from './EventDetailStyle';
 import { FaBookmark, FaRegBookmark } from 'react-icons/fa';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
-import { useHorizontalScroll } from '../../hooks/useHorizontalScroll'; // 1. 커스텀 훅 import
-
-const dummyEvents = [
-   {
-      id: 1,
-      title: '행사 1',
-      date: '2025/07/31~2025/09/25',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 2,
-      title: '행사 2',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 3,
-      title: '행사 3',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 4,
-      title: '행사 4',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 5,
-      title: '행사 5',
-      date: '2025/08/15~2025/08/20',
-      description: '자세한 내용. 지도 첨부파일이 있을시 보여주기.',
-   },
-   {
-      id: 6,
-      title: '행사 6',
-      date: '2025/08/15~2025/08/20',
-      description: '행사 2의 상세 내용입니다.',
-   },
-];
-const dummyRestaurants = [
-   { id: 1, name: '맛집 1' },
-   { id: 2, name: '맛집 2' },
-   { id: 3, name: '맛집 3' },
-   { id: 4, name: '맛집 4' },
-   { id: 5, name: '맛집 5' },
-   { id: 6, name: '맛집 6' },
-   { id: 7, name: '맛집 7' },
-   { id: 8, name: '맛집 8' },
-];
+import { useHorizontalScroll } from '../../hooks/useHorizontalScroll';
+import axiosInstance from '../../api/AxiosInstance';
+import LoadingPage from '../../components/Loading/Loding';
 
 const EventDetail = () => {
-   // 2. 훅은 반드시 컴포넌트 함수 안 최상단에서 호출해야 합니다.
+   const { id } = useParams();
    const scrollRef = useHorizontalScroll();
 
-   const { id } = useParams();
-   const event = dummyEvents.find((e) => e.id === parseInt(id));
+   const [event, setEvent] = useState(null);
+   const [restaurants, setRestaurants] = useState([]);
    const [isBookmarked, setIsBookmarked] = useState(false);
+   const [loading, setLoading] = useState(true);
 
-   // Dot 인디케이터는 일단 시각적으로만 표시합니다.
-   const dots = Array.from({ length: Math.ceil(dummyRestaurants.length / 3) });
-   const [activeDotIndex, setActiveDotIndex] = useState(0);
+   useEffect(() => {
+      const fetchData = async () => {
+         const startTime = Date.now();
 
-   if (!event) {
-      return <div>이벤트 정보를 찾을 수 없습니다.</div>;
-   }
+         try {
+            // 행사 상세 조회
+            const eventRes = await axiosInstance.get(
+               `/api/v1/event/detail/${id}`,
+            );
+            // console.log(eventRes.data);
+            if (eventRes.data.statusCode === 200) {
+               setEvent(eventRes.data.data);
+            }
+
+            // 근처 맛집 조회
+            const restaurantRes = await axiosInstance.get(
+               `/api/v1/event/detail/store/${id}`,
+            );
+
+            if (Array.isArray(restaurantRes.data)) {
+               setRestaurants(restaurantRes.data.slice(0, 3));
+            }
+
+            // 북마크 목록 조회 -> 현재 이벤트가 포함되어 있는지 확인
+            const bookmarkRes = await axiosInstance.get(
+               `/api/v1/event/bookmark`,
+            );
+            const bookmarkedEvents = bookmarkRes.data?.data || [];
+            const isBookmarkedEvent = bookmarkedEvents.some(
+               (e) => e.eventId === Number(id),
+            );
+            setIsBookmarked(isBookmarkedEvent);
+         } catch (error) {
+            console.error('데이터 조회 실패:', error);
+         } finally {
+            // 최소 2초 로딩
+            const elapsed = Date.now() - startTime;
+            const remainingTime = 2000 - elapsed;
+            if (remainingTime > 0) {
+               setTimeout(() => setLoading(false), remainingTime);
+            } else {
+               setLoading(false);
+            }
+         }
+      };
+
+      fetchData();
+   }, [id]);
+
+   // 북마크 토글 (추가만 가능)
+   const handleBookmark = async () => {
+      try {
+         const res = await axiosInstance.post(`/api/v1/event/bookmark/${id}`);
+         if (res.data.statusCode === 0) {
+            setIsBookmarked(true); // 해제 API 없으므로 true만 설정
+         }
+      } catch (error) {
+         console.error('북마크 저장 실패:', error);
+      }
+   };
+
+   if (loading) return <LoadingPage />;
+   if (!event) return <div>이벤트 정보를 찾을 수 없습니다.</div>;
 
    return (
       <S.PageContainer>
          <Header />
          <S.ContentWrapper>
-            {/* 상단 섹션 */}
             <S.EventHeaderContainer>
-               <S.EventImagePlaceholder />
+               {event.pictureUrl ? (
+                  <img
+                     src={event.pictureUrl}
+                     alt={event.eventName}
+                     style={{
+                        width: '100px',
+                        height: '100px',
+                        borderRadius: '12px',
+                     }}
+                  />
+               ) : (
+                  <S.EventImagePlaceholder />
+               )}
                <S.EventInfoWrapper>
                   <S.TitleWrapper>
-                     <S.EventTitle>{event.title}</S.EventTitle>
+                     <S.EventTitle>{event.eventName}</S.EventTitle>
                      <S.BookmarkWrapper
-                        onClick={() => setIsBookmarked(!isBookmarked)}
+                        onClick={handleBookmark}
                         style={{ cursor: 'pointer' }}
                      >
                         {isBookmarked ? (
@@ -91,29 +112,26 @@ const EventDetail = () => {
                         )}
                      </S.BookmarkWrapper>
                   </S.TitleWrapper>
-                  <S.EventDate>{event.date}</S.EventDate>
+                  <S.EventDate>
+                     {event.eventStartDate} ~ {event.eventEndDate}
+                  </S.EventDate>
                </S.EventInfoWrapper>
             </S.EventHeaderContainer>
 
-            {/* 중간 콘텐츠 섹션 */}
             <S.ContentSection>
                <S.DescriptionText>
-                  {event.description}
+                  {event.content}
                   <br />
-                  지도 첨부파일이 있을시 보여주기.
                </S.DescriptionText>
-               <S.FindRoute>+ 주소, 주차장, 대중교통 이용안내</S.FindRoute>
+               <S.FindRoute>+ 주소: {event.addless || '정보 없음'}</S.FindRoute>
             </S.ContentSection>
 
             <S.Divider />
 
-            {/* 하단 '근처 맛집' 섹션 */}
             <S.NearbySection>
                <S.SectionTitle>근처 맛집</S.SectionTitle>
-
-               {/* 3. 훅이 반환한 ref를 스크롤할 요소에 연결합니다. */}
                <S.PlaceList ref={scrollRef}>
-                  {dummyRestaurants.map((restaurant) => (
+                  {restaurants.map((restaurant) => (
                      <Link
                         to={`/store/${restaurant.id}`}
                         key={restaurant.id}

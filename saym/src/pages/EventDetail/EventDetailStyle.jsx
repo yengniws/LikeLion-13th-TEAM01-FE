@@ -83,7 +83,7 @@ export const ContentSection = styled.div`
 
 export const DescriptionText = styled.p`
    margin: 10px;
-   text-align: center;
+   text-align: left;
 `;
 
 export const FindRoute = styled.p`
