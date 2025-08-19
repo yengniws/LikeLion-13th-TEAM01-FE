@@ -139,7 +139,7 @@ export const MenuItem = styled.div`
 export const MenuName = styled.p`
    margin: 0 0 5px 0;
    font-size: 14px;
-   width: 95px;
+   width: 95 px;
    margin-top: 10px;
 `;
 

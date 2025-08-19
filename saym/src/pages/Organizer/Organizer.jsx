@@ -8,7 +8,7 @@ import Header from '../../components/Header/Header';
 import axiosInstance from '../../api/AxiosInstance';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading/Loding.jsx';
-import logoImg from '../../assets/img/mainlogo.png';
+import OrganizerBackground from '../../assets/img/or_bg.png';
 
 const Organizer = () => {
    const [inputValue, setInputValue] = useState('');
@@ -18,11 +18,11 @@ const Organizer = () => {
    const fileInputRef = useRef(null);
    const navigate = useNavigate();
 
-   // 로고 이미지 로딩
+   // 첫 배경 로딩
    useEffect(() => {
       const startTime = Date.now();
       const img = new Image();
-      img.src = logoImg;
+      img.src = OrganizerBackground;
       img.onload = () => {
          const elapsed = Date.now() - startTime;
          const remainingTime = 2000 - elapsed;
@@ -70,46 +70,33 @@ const Organizer = () => {
             return;
          }
 
-         if (isLoading) return;
+         if (isLoading) return; // 중복 요청 방지
 
          setIsLoading(true);
          const formData = new FormData();
          formData.append('description', inputValue);
          formData.append('imageFile', selectedFile);
 
-         const config = {
-            headers: {
-               'Content-Type': 'multipart/form-data',
-            },
-         };
-
-         const startTime = Date.now();
-
          try {
             const response = await axiosInstance.post(
                '/api/v1/ai/analyze',
                formData,
-               config,
+               {
+                  headers: { 'Content-Type': 'multipart/form-data' },
+               },
             );
 
             const { aiId } = response.data;
+            if (!aiId) throw new Error('aiId 없음');
+
             localStorage.setItem('lastAiId', aiId);
 
-            const elapsed = Date.now() - startTime;
-            const remainingTime = 2000 - elapsed;
-            if (remainingTime > 0) {
-               setTimeout(() => {
-                  setIsLoading(false);
-                  navigate(`/airesult/${aiId}`);
-               }, remainingTime);
-            } else {
-               setIsLoading(false);
-               navigate(`/airesult/${aiId}`);
-            }
+            // 로딩 끄지 않고 그대로 이동
+            navigate(`/airesult/${aiId}`);
          } catch (error) {
             console.error('API 호출 에러:', error);
             toast.error('요청에 실패했습니다.');
-            setIsLoading(false);
+            setIsLoading(false); // 실패했을 때만 로딩 해제
          }
       }
    };
@@ -172,7 +159,7 @@ const Organizer = () => {
             </S.InputBarContainer>
             <input
                type="file"
-               accept="image/JPEG"
+               accept="image/jpeg"
                ref={fileInputRef}
                onChange={handleFileChange}
                style={{ display: 'none' }}
