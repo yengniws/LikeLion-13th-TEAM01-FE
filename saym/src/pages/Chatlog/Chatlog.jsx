@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as S from './ChatlogStyle';
 import SubHeader from '../../components/SubHeader/SubHeader';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance from '../../api/axiosInstance';
+import axiosInstance from '../../api/AxiosInstance';
 import LoadingPage from '../../components/Loading/Loding';
 
 const Chatlog = () => {

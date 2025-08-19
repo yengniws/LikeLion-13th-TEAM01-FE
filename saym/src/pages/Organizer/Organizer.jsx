@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Checkbox, FormControlLabel } from '@mui/material';
 import Header from '../../components/Header/Header';
-import axiosInstance from '../../api/axiosInstance';
+import axiosInstance from '../../api/AxiosInstance';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading/Loding.jsx';
 

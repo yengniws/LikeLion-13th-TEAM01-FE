@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Header_customer from '../../components/Header/Header_ customer/Header_ customer';
 import Header from '../../components/Header/Header';
 import * as S from './myPageStyle';
-import axiosInstance from '../../api/axiosInstance';
+import axiosInstance from '../../api/AxiosInstance';
 import LoadingPage from '../../components/Loading/Loding';
 
 const MyPage = () => {

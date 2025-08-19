@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import * as S from './AuthStyle';
 import cardImg from '../../assets/img/auth_card.png';
 import chatMsg from '../../assets/img/auth_chat.png';
-import axiosInstance from '../../api/axiosInstance';
+import axiosInstance from '../../api/AxiosInstance';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import LoadingPage from '../../components/Loading/Loding';
