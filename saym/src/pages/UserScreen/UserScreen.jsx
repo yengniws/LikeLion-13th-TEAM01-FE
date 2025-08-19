@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fa';
 
 //필요한 모듈들을 가져옵니다.
-import axiosInstance from '../../api/axiosInstance'; // API 호출을 위한 axios 인스턴스
+import axiosInstance from '../../api/AxiosInstance'; // API 호출을 위한 axios 인스턴스
 import * as S from './UserScreenStyle';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
 import FilterModal from './Filter/FilterModal';
