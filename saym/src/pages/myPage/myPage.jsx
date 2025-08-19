@@ -202,18 +202,22 @@ const MyPage = () => {
             <S.SavedEventsSection>
                <S.SectionTitle>저장한 행사</S.SectionTitle>
                <S.EventsList>
-                  {events.map((event) => (
-                     <S.EventItem
-                        key={event.eventId}
-                        onClick={() => handleEventClick(event.eventId)}
-                     >
-                        <S.EventImage
-                           src={event.pictureUrl}
-                           alt={event.eventName}
-                        />
-                        <S.EventName>{event.eventName}</S.EventName>
-                     </S.EventItem>
-                  ))}
+                  {events.length === 0 ? (
+                     <S.NoEventMessage>저장한 행사가 없습니다</S.NoEventMessage>
+                  ) : (
+                     events.map((event) => (
+                        <S.EventItem
+                           key={event.eventId}
+                           onClick={() => handleEventClick(event.eventId)}
+                        >
+                           <S.EventImage
+                              src={event.pictureUrl}
+                              alt={event.eventName}
+                           />
+                           <S.EventName>{event.eventName}</S.EventName>
+                        </S.EventItem>
+                     ))
+                  )}
                </S.EventsList>
             </S.SavedEventsSection>
 

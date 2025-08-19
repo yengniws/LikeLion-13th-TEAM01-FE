@@ -184,3 +184,11 @@ export const FooterLink = styled.a`
    color: #888;
    text-decoration: none;
 `;
+
+export const NoEventMessage = styled.div`
+   width: 100%;
+   text-align: center;
+   color: #aaa;
+   font-size: 16px;
+   padding: 30px 0;
+`;
