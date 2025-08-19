@@ -92,7 +92,7 @@ export const ContentSection = styled.div`
 `;
 
 export const DescriptionText = styled.p`
-   margin: 30px 25px 0 25px;
+   margin: 10px 25px 0 25px;
    text-align: left;
    flex-grow: 1; /* 내용 영역이 남는 공간 모두 차지 */
    overflow-y: auto; /* y축 스크롤 활성화 */
@@ -154,11 +154,10 @@ export const PlaceCard = styled.div`
 `;
 
 export const PlaceImageWrapper = styled.div`
-   width: 100px;
-   height: 100px;
+   width: 80px;
+   height: 80px;
    border-radius: 8px;
    overflow: hidden;
-   background-color: #eee;
    margin-bottom: 6px;
    flex-shrink: 0;
 `;
