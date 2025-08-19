@@ -19,7 +19,7 @@ export const router = createBrowserRouter([
       path: '/',
       element: <Layout />,
       children: [
-         { path: '/login', element: <Login /> },
+         { path: '/', element: <Login /> },
          { path: '/api/v1/oauth2', element: <KakaoRedirectHandler /> },
          { path: '/selectuser', element: <SelectUser /> },
          { path: '/userscreen', element: <UserScreen /> },
