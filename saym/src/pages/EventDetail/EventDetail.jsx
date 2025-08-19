@@ -35,7 +35,7 @@ const EventDetail = () => {
             const restaurantRes = await axiosInstance.get(
                `/api/v1/event/detail/store/${eventId}`,
             );
-            console.log('근처 맛집 응답:', restaurantRes.data);
+            // console.log('근처 맛집 응답:', restaurantRes.data);
 
             if (
                Array.isArray(restaurantRes.data) &&
