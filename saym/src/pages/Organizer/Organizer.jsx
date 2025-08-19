@@ -8,6 +8,7 @@ import Header from '../../components/Header/Header';
 import axiosInstance from '../../api/AxiosInstance';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading/Loding.jsx';
+import logoImg from '../../assets/img/mainlogo.png';
 
 const Organizer = () => {
    const [inputValue, setInputValue] = useState('');
@@ -21,7 +22,7 @@ const Organizer = () => {
    useEffect(() => {
       const startTime = Date.now();
       const img = new Image();
-      img.src = '/src/assets/img/mainlogo.png';
+      img.src = logoImg;
       img.onload = () => {
          const elapsed = Date.now() - startTime;
          const remainingTime = 2000 - elapsed;
