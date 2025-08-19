@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Container, LogoCircle, Logoimg, KakaoImg } from './LoginStyle.jsx';
 import logoimg from '../../assets/img/mainlogo.png';
 import kakaoLoginImg from '../../assets/img/kakao_login_large_wide.png';
-import Loading from '../../components/Loading/Loding.jsx';
 
 const Login = () => {
    const [loading, setLoading] = useState(true);
@@ -21,7 +20,7 @@ const Login = () => {
       img.onload = () => setLoading(false);
    }, []);
 
-   if (loading) return <Loading />;
+   if (loading) return null;
 
    return (
       <Container>
