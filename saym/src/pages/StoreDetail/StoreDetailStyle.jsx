@@ -130,11 +130,17 @@ export const MenuGrid = styled.div`
 export const MenuItem = styled.div`
    text-align: center;
    margin-bottom: 30px;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
 `;
 
 export const MenuName = styled.p`
    margin: 0 0 5px 0;
    font-size: 14px;
+   width: 95px;
+   margin-top: 10px;
 `;
 
 export const MenuPrice = styled.p`
