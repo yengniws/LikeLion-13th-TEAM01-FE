@@ -126,7 +126,7 @@ export const NearbySection = styled.div`
 export const SectionTitle = styled.h3`
    font-size: 18px;
    font-weight: 600;
-   margin: 0 0 23px 5px;
+   margin: 0 0 10px 5px;
 `;
 
 export const PlaceList = styled.div`
@@ -149,7 +149,6 @@ export const PlaceCard = styled.div`
    flex-direction: column; /* 세로 배치 */
    align-items: center;
    border-radius: 8px;
-   background-color: #f9f9f9;
    overflow: hidden;
 `;
 
