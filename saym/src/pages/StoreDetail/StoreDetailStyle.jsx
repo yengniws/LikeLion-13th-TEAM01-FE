@@ -9,7 +9,7 @@ export const PageContainer = styled.div`
    flex-direction: column;
    box-sizing: border-box;
    position: relative;
-   padding-top: 75px;
+   padding-top: 100px;
 `;
 
 export const ContentWrapper = styled.div`
@@ -39,9 +39,10 @@ export const InfoTextWrapper = styled.div`
 `;
 
 export const StoreName = styled.h2`
-   font-size: 20px;
+   font-size: 17px;
    font-weight: bold;
-   margin-bottom: 50px;
+   margin-bottom: 35px;
+   margin-top: 10px;
 `;
 
 export const OperatingHours = styled.p`
@@ -64,9 +65,12 @@ export const EditButton = styled.button`
 
 export const CouponSection = styled.section`
    display: flex;
-   justify-content: space-between;
+   justify-content: center;
+   align-items: center;
    gap: 10px;
-   margin-bottom: 30px;
+   padding-bottom: 30px;
+   width: 300px;
+   margin: 0 auto;
 `;
 
 export const CouponWrapper = styled.div`
@@ -101,7 +105,7 @@ export const SectionTitle = styled.h3`
    margin: 0 0 15px 0;
    display: flex;
    align-items: center;
-   margin-bottom: 30px;
+   margin-bottom: 20px;
    gap: 8px;
 `;
 
@@ -140,7 +144,7 @@ export const MenuPrice = styled.p`
 `;
 
 export const InfoBox = styled.div`
-   border: 1px solid #e0e0e0;
+   border: 1px solid #4daeff;
    border-radius: 8px;
    padding: 15px;
    font-size: 14px;
@@ -158,6 +162,12 @@ export const ReviewItem = styled.div`
    display: flex;
    align-items: center;
    gap: 15px;
+   padding: 10px 0;
+   border-bottom: 0.5px solid #4daeff;
+
+   &:last-child {
+      border-bottom: none; /* 마지막 리뷰 아이템 밑줄 제거 */
+   }
 `;
 
 export const ReviewImagePlaceholder = styled.div`

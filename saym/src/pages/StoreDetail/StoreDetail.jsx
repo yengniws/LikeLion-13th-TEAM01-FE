@@ -1,52 +1,79 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as S from './StoreDetailStyle';
 import Header from '../../components/Header/Header_ customer/Header_ customer';
-import { FaMapMarkerAlt, FaCommentDots, FaDownload } from 'react-icons/fa';
-import { FaPen } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaDownload } from 'react-icons/fa';
 import { LuNotebookPen } from 'react-icons/lu';
-import couponBg from '../../assets/img/couponBgImage.png'; // 쿠폰 배경 이미지
-
-const storeData = {
-   name: '가게 이름',
-   operatingHours: '15:00 - 23:00',
-   coupons: [
-      {
-         id: 1,
-         name: '5000원 할인 쿠폰',
-         description: '오후 5시부터 8시까지 사용 가능합니다.',
-      },
-      {
-         id: 2,
-         name: '미니 김치찌개 쿠폰',
-         description: '메인 메뉴 주문 시 사용 가능합니다. (시간 무관)',
-      },
-   ],
-   menu: [
-      { id: 1, name: '삼겹살', price: '20000원' },
-      { id: 2, name: '마라샹궈', price: '20000원' },
-      { id: 3, name: '김치', price: '20000원' },
-      { id: 4, name: '들기름 막국수', price: '20000원' },
-      { id: 5, name: '육회', price: '20000원' },
-      { id: 6, name: '말차커피', price: '20000원' },
-   ],
-   location: {
-      address: '서울특별시 구로구 연동로 320',
-      parking: '초록 상가 옆 무료 주차장',
-   },
-   reviews: [{ id: 1, content: '짧은 글', imageUrl: 'placeholder_url' }],
-};
+import couponBg from '../../assets/img/couponBgImage.png';
+import axiosInstance from '../../api/AxiosInstance';
+import { useParams } from 'react-router-dom';
+import LoadingScreen from '../../components/Loading/Loding';
 
 const StoreDetail = () => {
-   const [isOwner, setIsOwner] = useState(true);
+   const { storeId } = useParams();
+   const [storeData, setStoreData] = useState(null);
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [selectedCoupon, setSelectedCoupon] = useState(null);
+   const [loading, setLoading] = useState(true);
 
-   // 쿠폰 클릭 시 모달 열기 + 다운로드
+   useEffect(() => {
+      const fetchStoreDetail = async () => {
+         try {
+            const startTime = Date.now();
+
+            const [storeRes, reviewRes] = await Promise.all([
+               axiosInstance.get(`/api/v1/store/${storeId}`),
+               axiosInstance.get(`/api/v1/store/review/${storeId}`),
+            ]);
+
+            const apiData = storeRes.data?.data;
+            const reviewData = reviewRes.data?.data || [];
+
+            setStoreData({
+               id: apiData.id,
+               name: apiData.name,
+               pictureUrl: apiData.pictureUrl,
+               operatingHours:
+                  apiData.operatingHours ||
+                  `${apiData.openTime} - ${apiData.closeTime}`,
+               coupons: apiData.couponName
+                  ? [
+                       {
+                          id: 1,
+                          name: apiData.couponName,
+                       },
+                    ]
+                  : [],
+               menu: apiData.menus.map((m) => ({
+                  id: m.id,
+                  name: m.menuName,
+                  price: `${m.price}원`,
+               })),
+               location: {
+                  address: apiData.address,
+                  parking: apiData.parkingNote,
+               },
+               reviews: reviewData.map((r) => ({
+                  id: r.id,
+                  content: r.content,
+               })),
+            });
+
+            const elapsed = Date.now() - startTime;
+            const remaining = 2000 - elapsed;
+            setTimeout(() => setLoading(false), remaining > 0 ? remaining : 0);
+         } catch (err) {
+            console.error('가게 정보 불러오기 실패:', err);
+            setLoading(false);
+         }
+      };
+
+      fetchStoreDetail();
+   }, [storeId]);
+
    const handleCouponClick = (coupon) => {
       setSelectedCoupon(coupon);
       setIsModalOpen(true);
 
-      // 다운로드
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       canvas.width = 700;
@@ -61,14 +88,13 @@ const StoreDetail = () => {
          ctx.textAlign = 'center';
          ctx.textBaseline = 'middle';
 
+         // 쿠폰 이름 (중앙)
          ctx.font = '24px Arial';
          ctx.fillText(coupon.name, canvas.width / 2, canvas.height / 2 - 20);
+
+         // 가게 이름 (하단)
          ctx.font = '18px Arial';
-         ctx.fillText(
-            coupon.description,
-            canvas.width / 2,
-            canvas.height / 2 + 20,
-         );
+         ctx.fillText(storeData.name, canvas.width / 2, canvas.height - 30);
 
          const link = document.createElement('a');
          link.download = `${coupon.name}.png`;
@@ -82,6 +108,21 @@ const StoreDetail = () => {
       setSelectedCoupon(null);
    };
 
+   if (loading) {
+      return <LoadingScreen />;
+   }
+
+   if (!storeData) {
+      return (
+         <S.PageContainer>
+            <Header />
+            <S.ContentWrapper>
+               <p>가게 정보를 불러올 수 없습니다.</p>
+            </S.ContentWrapper>
+         </S.PageContainer>
+      );
+   }
+
    return (
       <S.PageContainer>
          <Header />
@@ -89,32 +130,41 @@ const StoreDetail = () => {
          <S.ContentWrapper>
             {/* 가게 기본 정보 */}
             <S.StoreInfoSection>
-               <S.StoreImagePlaceholder />
+               {storeData.pictureUrl ? (
+                  <img
+                     src={storeData.pictureUrl}
+                     alt={storeData.name}
+                     style={{
+                        width: '100px',
+                        height: '100px',
+                        borderRadius: '8px',
+                     }}
+                  />
+               ) : (
+                  <S.StoreImagePlaceholder />
+               )}
                <S.InfoTextWrapper>
                   <S.StoreName>{storeData.name}</S.StoreName>
                   <S.OperatingHours>
                      영업시간 : {storeData.operatingHours}
                   </S.OperatingHours>
                </S.InfoTextWrapper>
-               {isOwner && (
-                  <S.EditButton>
-                     <FaPen /> &nbsp;가게 정보 수정
-                  </S.EditButton>
-               )}
             </S.StoreInfoSection>
 
             {/* 쿠폰 섹션 */}
-            <S.CouponSection>
-               {storeData.coupons.map((coupon) => (
-                  <S.CouponWrapper
-                     key={coupon.id}
-                     onClick={() => handleCouponClick(coupon)}
-                  >
-                     <S.CouponText>{coupon.name}</S.CouponText>
-                     <FaDownload color="4DAEFF" size={15} />
-                  </S.CouponWrapper>
-               ))}
-            </S.CouponSection>
+            {storeData.coupons.length > 0 && (
+               <S.CouponSection>
+                  {storeData.coupons.map((coupon) => (
+                     <S.CouponWrapper
+                        key={coupon.id}
+                        onClick={() => handleCouponClick(coupon)}
+                     >
+                        <S.CouponText>{coupon.name}</S.CouponText>
+                        <FaDownload color="4DAEFF" size={15} />
+                     </S.CouponWrapper>
+                  ))}
+               </S.CouponSection>
+            )}
 
             {/* 메뉴판 섹션 */}
             <S.Section>
@@ -123,6 +173,7 @@ const StoreDetail = () => {
                   {storeData.menu.map((item) => (
                      <S.MenuItem key={item.id}>
                         <S.MenuName>{item.name}</S.MenuName>
+                        <br />
                         <S.MenuPrice>{item.price}</S.MenuPrice>
                      </S.MenuItem>
                   ))}
@@ -145,18 +196,18 @@ const StoreDetail = () => {
                <S.SectionHeader>
                   <S.SectionTitle>
                      리뷰 <LuNotebookPen size={20} />
-                     <S.WriteReviewLink href="#">
-                        + 리뷰 작성하러 가기
-                     </S.WriteReviewLink>
                   </S.SectionTitle>
                </S.SectionHeader>
                <S.InfoBox>
-                  {storeData.reviews.map((review) => (
-                     <S.ReviewItem key={review.id}>
-                        <S.ReviewImagePlaceholder />
-                        <S.ReviewText>{review.content}</S.ReviewText>
-                     </S.ReviewItem>
-                  ))}
+                  {storeData.reviews.length > 0 ? (
+                     storeData.reviews.map((review) => (
+                        <S.ReviewItem key={review.id}>
+                           <S.ReviewText>{review.content}</S.ReviewText>
+                        </S.ReviewItem>
+                     ))
+                  ) : (
+                     <p>아직 리뷰가 없습니다.</p>
+                  )}
                </S.InfoBox>
             </S.Section>
          </S.ContentWrapper>
