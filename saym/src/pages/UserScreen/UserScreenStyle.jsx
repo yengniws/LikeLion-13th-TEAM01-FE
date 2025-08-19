@@ -20,6 +20,7 @@ export const ControlsContainer = styled.div`
    margin-bottom: 30px;
    /* 헤더가 없어진 만큼 상단 여백 추가 */
    margin-top: 24px;
+   position: relative;
 `;
 
 // 공통 버튼 스타일
@@ -69,7 +70,7 @@ export const EventCardContainer = styled.li`
 `;
 
 // 이벤트 이미지 (회색 네모)
-export const EventImage = styled.div`
+export const EventImage = styled.img`
    width: 100px;
    height: 100px;
    background-color: #f0f0f0;
@@ -105,5 +106,33 @@ export const BookmarkIconWrapper = styled.div`
    top: 0;
    right: 0;
    cursor: pointer;
-   color: #555;
+   color: #4daeff;
+`;
+export const SortDropdownContainer = styled.div`
+   position: absolute;
+   top: 40px; /* 정렬 버튼 바로 아래에 위치 */
+   right: 0;
+   width: 120px;
+   background-color: white;
+   border-radius: 8px;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+   z-index: 10;
+   display: flex;
+   flex-direction: column;
+   overflow: hidden; /* border-radius 적용을 위해 */
+`;
+
+export const SortOptionButton = styled.button`
+   width: 100%;
+   padding: 10px 12px;
+   border: none;
+   background-color: white;
+   text-align: left;
+   font-size: 14px;
+   color: #333;
+   cursor: pointer;
+
+   &:hover {
+      background-color: #f5f5f5;
+   }
 `;
