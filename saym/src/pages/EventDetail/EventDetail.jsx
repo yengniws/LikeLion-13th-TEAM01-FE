@@ -72,15 +72,25 @@ const EventDetail = () => {
       fetchData();
    }, [id]);
 
-   // 북마크 토글 (추가만 가능)
    const handleBookmark = async () => {
       try {
-         const res = await axiosInstance.post(`/api/v1/event/bookmark/${id}`);
-         if (res.data.statusCode === 200) {
-            setIsBookmarked(true); // 해제 API 없으므로 true만 설정
+         if (isBookmarked) {
+            const res = await axiosInstance.delete(
+               `/api/v1/event/bookmark/${id}`,
+            );
+            if (res.data.statusCode === 200) {
+               setIsBookmarked(false);
+            }
+         } else {
+            const res = await axiosInstance.post(
+               `/api/v1/event/bookmark/${id}`,
+            );
+            if (res.data.statusCode === 200) {
+               setIsBookmarked(true);
+            }
          }
       } catch (error) {
-         console.error('북마크 저장 실패:', error);
+         console.error('북마크 처리 실패:', error);
       }
    };
 

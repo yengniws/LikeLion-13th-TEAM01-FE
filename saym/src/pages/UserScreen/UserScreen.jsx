@@ -119,20 +119,27 @@ const UserScreen = () => {
       closeFilterModal();
    };
 
-   // 북마크는 추가만 가능
    const handleBookmarkClick = async (e, eventId) => {
       e.stopPropagation();
 
       const isBookmarked = bookmarkedEvents.includes(eventId);
-      if (isBookmarked) return;
 
       try {
-         setBookmarkedEvents((prev) => [...prev, eventId]);
-         await axiosInstance.post(`/api/v1/event/bookmark/${eventId}`);
+         if (isBookmarked) {
+            setBookmarkedEvents((prev) => prev.filter((id) => id !== eventId));
+            await axiosInstance.delete(`/api/v1/event/bookmark/${eventId}`);
+         } else {
+            setBookmarkedEvents((prev) => [...prev, eventId]);
+            await axiosInstance.post(`/api/v1/event/bookmark/${eventId}`);
+         }
       } catch (err) {
-         console.error('❌ 북마크 추가 중 에러 발생:', err);
-         alert('북마크 처리에 실패했습니다. 다시 시도해주세요.');
-         setBookmarkedEvents((prev) => prev.filter((id) => id !== eventId));
+         console.error('북마크 처리 중 에러 발생:', err);
+
+         if (isBookmarked) {
+            setBookmarkedEvents((prev) => [...prev, eventId]);
+         } else {
+            setBookmarkedEvents((prev) => prev.filter((id) => id !== eventId));
+         }
       }
    };
 
