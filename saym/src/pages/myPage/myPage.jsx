@@ -145,7 +145,7 @@ const MyPage = () => {
    const handleLogout = () => {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('refreshToken');
-      navigate('/login');
+      navigate('/');
    };
 
    const handleEventClick = (eventId) => {
