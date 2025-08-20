@@ -135,7 +135,7 @@ const Auth = () => {
 
    const handleModalConfirm = () => {
       setShowModal(false);
-      navigate('/login');
+      navigate('/');
    };
 
    if (loading) {
